@@ -11,7 +11,7 @@ export default function NewsPage() {
   return (
     <>
       <Header />
-      <main>
+      <main className="page-below-header">
         <NewsPreview />
       </main>
       <Footer />

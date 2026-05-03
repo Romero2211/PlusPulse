@@ -76,12 +76,17 @@ export default function Header() {
               </li>
               <li>
                 <Link href="/news" className="nav-link" onClick={() => setIsMenuOpen(false)}>
-                  {t('newsPreview.ctaAll')}
+                  {t('nav.news')}
                 </Link>
               </li>
               <li>
                 <Link href="/contacts" className="nav-link" onClick={() => setIsMenuOpen(false)}>
                   {t('nav.contact')}
+                </Link>
+              </li>
+              <li>
+                <Link href="/register" className="nav-link nav-link-register" onClick={() => setIsMenuOpen(false)}>
+                  {t('nav.register')}
                 </Link>
               </li>
               <li>

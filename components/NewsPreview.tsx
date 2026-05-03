@@ -31,7 +31,7 @@ export default function NewsPreview() {
         </div>
 
         <div className="news-preview-actions">
-          <Link className="btn btn-secondary" href="/news">
+          <Link className="btn btn-primary" href="/news">
             {t('newsPreview.ctaAll')}
           </Link>
         </div>

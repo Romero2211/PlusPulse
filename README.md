@@ -65,7 +65,7 @@ PlusPulse/
    ```
 
 3. **Відкрийте браузер:**
-   Відкрийте [http://localhost:4000](http://localhost:4000)
+   Відкрийте [http://localhost:3000](http://localhost:3000)
 
 ### Інші команди
 

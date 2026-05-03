@@ -14,7 +14,7 @@ export default function AboutPage() {
   return (
     <>
       <Header />
-      <main>
+      <main className="page-below-header">
         <About />
         <Activities />
         <Mission />

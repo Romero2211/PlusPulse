@@ -41,10 +41,13 @@ export default function Footer() {
                 <Link href="/donate">{t('nav.donate')}</Link>
               </li>
               <li>
-                <Link href="/news">{t('newsPreview.ctaAll')}</Link>
+                <Link href="/news">{t('nav.news')}</Link>
               </li>
               <li>
                 <Link href="/contacts">{t('nav.contact')}</Link>
+              </li>
+              <li>
+                <Link href="/register">{t('nav.register')}</Link>
               </li>
             </ul>
           </div>

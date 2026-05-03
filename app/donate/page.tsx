@@ -13,7 +13,7 @@ export default function DonatePage() {
   return (
     <>
       <Header />
-      <main className="donate-page">
+      <main className="donate-page page-below-header">
         <section className="donate-page-hero" aria-label="Допомогти фонду">
           <div className="container">
             <h1 className="donate-page-hero-title">Допомогти фонду</h1>

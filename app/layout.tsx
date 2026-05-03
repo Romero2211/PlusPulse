@@ -11,6 +11,10 @@ export const metadata: Metadata = {
   description: 'Благодійна організація «Благодійний фонд «ПЛЮС ПУЛЬС» - недержавна, неприбуткова благодійна організація, що діє відповідно до законодавства України.',
   keywords: 'благодійність, фонд, Україна, допомога, благодійна організація',
   robots: 'index, follow',
+  icons: {
+    icon: [{ url: '/icon.png', type: 'image/png' }],
+    apple: [{ url: '/icon.png', type: 'image/png' }],
+  },
 }
 
 export const viewport: Viewport = {

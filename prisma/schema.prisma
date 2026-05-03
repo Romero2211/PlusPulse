@@ -1,0 +1,55 @@
+// https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+/// Користувач (під майбутню реєстрацію / auth)
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  name         String?
+  passwordHash String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  hostedEvents   Event[]              @relation("EventHost")
+  participations EventParticipant[]
+}
+
+/// Волонтерський захід
+model Event {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  /// Причина / мета зустрічі (окремо від загального опису)
+  reason      String?
+  startsAt    DateTime
+  location    String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  hostId String
+  host   User   @relation("EventHost", fields: [hostId], references: [id], onDelete: Cascade)
+
+  participants EventParticipant[]
+}
+
+/// Учасник заходу (унікальна пара event + user)
+model EventParticipant {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+
+  eventId String
+  event   Event  @relation(fields: [eventId], references: [id], onDelete: Cascade)
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([eventId, userId])
+}

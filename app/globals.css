@@ -134,6 +134,26 @@ body {
     box-shadow: var(--shadow-md);
 }
 
+.nav-link-register {
+    color: var(--primary-color) !important;
+    border: 2px solid var(--primary-color);
+    padding: 0.45rem 1.25rem;
+    border-radius: 0.5rem;
+    margin-left: 0.5rem;
+    font-weight: 600;
+}
+
+.nav-link-register::after {
+    display: none;
+}
+
+.nav-link-register:hover {
+    background: var(--primary-color);
+    color: white !important;
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
 .language-switcher {
     display: flex;
     gap: 0.5rem;
@@ -725,11 +745,57 @@ section {
 }
 
 .programs-preview-actions {
-    margin-top: 2rem;
+    margin-top: 2.25rem;
     display: flex;
-    gap: 1rem;
+    gap: 1.25rem;
     justify-content: center;
     flex-wrap: wrap;
+}
+
+/* Помітні CTA на світлому фоні (геройські .btn тут не підходять) */
+.programs-preview-actions .btn,
+.news-preview-actions .btn {
+    font-size: 1.0625rem;
+    font-weight: 700;
+    padding: 1.125rem 2.25rem;
+    min-width: min(100%, 220px);
+    text-align: center;
+    box-shadow: var(--shadow-md);
+}
+
+.programs-preview-actions .btn-secondary,
+.news-preview-actions .btn-secondary {
+    background: white;
+    color: var(--primary-color);
+    border: 2px solid var(--primary-color);
+}
+
+.programs-preview-actions .btn-secondary:hover,
+.news-preview-actions .btn-secondary:hover {
+    background: var(--primary-color);
+    color: white;
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-lg);
+}
+
+.programs-preview-actions .btn-primary,
+.news-preview-actions .btn-primary {
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+    color: white;
+    border: 2px solid transparent;
+}
+
+.programs-preview-actions .btn-primary:hover,
+.news-preview-actions .btn-primary:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-xl);
+    filter: brightness(1.06);
+}
+
+.programs-preview-actions .btn:focus-visible,
+.news-preview-actions .btn:focus-visible {
+    outline: 3px solid var(--accent-color);
+    outline-offset: 3px;
 }
 
 /* News Preview (Home) */
@@ -776,7 +842,7 @@ section {
 }
 
 .news-preview-actions {
-    margin-top: 2rem;
+    margin-top: 2.25rem;
     display: flex;
     justify-content: center;
 }
@@ -1095,6 +1161,120 @@ section {
     margin: 0 auto;
 }
 
+/* Додатковий відступ під фіксованим хедером (внутрішні сторінки) */
+main.page-below-header > section:first-child:not(.donate-page-hero) {
+    padding-top: 6.75rem;
+}
+
+main.page-below-header .donate-page-hero {
+    padding: 7.25rem 0 3rem;
+}
+
+/* Сторінка реєстрації */
+main.register-page {
+    padding-top: 7rem;
+    padding-bottom: 4rem;
+    background: var(--bg-light);
+    min-height: 55vh;
+}
+
+.register-form-card {
+    max-width: 480px;
+    margin: 0 auto;
+    background: white;
+    border: 1px solid var(--border-color);
+    border-radius: 1rem;
+    padding: 2.5rem 2rem;
+    box-shadow: var(--shadow-lg);
+}
+
+.register-form-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 0.75rem;
+    text-align: center;
+}
+
+.register-form-subtitle {
+    font-size: 1rem;
+    color: var(--text-secondary);
+    line-height: 1.65;
+    text-align: center;
+    margin-bottom: 1.75rem;
+}
+
+.register-form-alert {
+    background: #fef2f2;
+    color: #b91c1c;
+    padding: 0.75rem 1rem;
+    border-radius: 0.5rem;
+    margin-bottom: 1.25rem;
+    font-size: 0.95rem;
+}
+
+.register-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+.register-form-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.register-form-field span {
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--text-primary);
+}
+
+.register-form-field input {
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    transition: var(--transition);
+}
+
+.register-form-field input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+
+.register-form-submit {
+    margin-top: 0.5rem;
+    width: 100%;
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+    color: white !important;
+    border: none;
+    cursor: pointer;
+    font-weight: 700;
+    padding: 1rem 1.5rem;
+    border-radius: 0.5rem;
+    box-shadow: var(--shadow-md);
+}
+
+.register-form-submit:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+}
+
+.register-form-submit:disabled {
+    opacity: 0.75;
+    cursor: not-allowed;
+}
+
+.register-form-success .register-form-message {
+    text-align: center;
+    color: var(--text-secondary);
+    line-height: 1.7;
+    font-size: 1.05rem;
+}
+
 /* Responsive Design */
 /* Show hamburger earlier so nav doesn't overflow on tablets/small desktop */
 @media (max-width: 1024px) {
@@ -1126,6 +1306,10 @@ section {
     }
 
     .nav-link-donate {
+        margin-left: 0;
+    }
+
+    .nav-link-register {
         margin-left: 0;
     }
 

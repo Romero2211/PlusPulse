@@ -11,7 +11,7 @@ export default function ContactsPage() {
   return (
     <>
       <Header />
-      <main>
+      <main className="page-below-header">
         <Contact />
       </main>
       <Footer />
