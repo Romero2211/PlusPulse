@@ -1,5 +1,6 @@
 'use client'
 
+import Link from 'next/link'
 import { useFormStatus } from 'react-dom'
 import { useLanguage } from '@/contexts/LanguageContext'
 import { registerAction, type RegisterFormState } from '@/app/register/actions'
@@ -39,15 +40,6 @@ export default function RegisterForm() {
   const { t } = useLanguage()
   const [state, formAction] = useActionState(registerAction, initialState)
 
-  if (state.success) {
-    return (
-      <div className="register-form-card register-form-success" role="status">
-        <h1 className="register-form-title">{t('register.title')}</h1>
-        <p className="register-form-message">{t('register.success')}</p>
-      </div>
-    )
-  }
-
   return (
     <div className="register-form-card">
       <h1 className="register-form-title">{t('register.title')}</h1>
@@ -78,6 +70,10 @@ export default function RegisterForm() {
         </label>
         <SubmitButton />
       </form>
+
+      <p className="login-form-footer">
+        <Link href="/login">{t('register.linkLogin')}</Link>
+      </p>
     </div>
   )
 }

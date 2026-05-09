@@ -1,18 +1,53 @@
 import Header from '@/components/Header'
-import NewsPreview from '@/components/NewsPreview'
 import Footer from '@/components/Footer'
+import NewsPostList from '@/components/NewsPostList'
+import { prisma } from '@/lib/prisma'
+
+export const dynamic = 'force-dynamic'
 
 export const metadata = {
   title: 'Новини | БО БФ «ПЛЮС ПУЛЬС»',
   description: 'Новини, події та оновлення благодійного фонду «ПЛЮС ПУЛЬС».',
 }
 
-export default function NewsPage() {
+export default async function NewsPage() {
+  const posts = await prisma.newsPost.findMany({
+    where: { publishedAt: { not: null } },
+    orderBy: { publishedAt: 'desc' },
+    select: {
+      id: true,
+      title: true,
+      slug: true,
+      excerpt: true,
+      coverImageUrl: true,
+      publishedAt: true,
+    },
+    take: 50,
+  })
+
+  const entries = posts.map((p) => ({
+    id: p.id,
+    slug: p.slug,
+    title: p.title,
+    excerpt: p.excerpt,
+    coverImageUrl: p.coverImageUrl,
+    publishedAtIso: p.publishedAt!.toISOString(),
+  }))
+
   return (
     <>
       <Header />
       <main className="page-below-header">
-        <NewsPreview />
+        <section className="news-page">
+          <div className="container">
+            <h1 className="events-page-title">Новини</h1>
+            {posts.length === 0 ? (
+              <p className="events-empty">Поки немає опублікованих новин.</p>
+            ) : (
+              <NewsPostList posts={entries} locale="uk" />
+            )}
+          </div>
+        </section>
       </main>
       <Footer />
     </>

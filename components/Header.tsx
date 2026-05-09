@@ -1,18 +1,36 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
+import { createPortal } from 'react-dom'
 import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useLanguage } from '@/contexts/LanguageContext'
+import { useSession } from '@/contexts/SessionContext'
+import { logoutAction } from '@/app/auth/actions'
+import LoginForm from '@/components/LoginForm'
 import './Header.css'
 
 export default function Header() {
   const { language, setLanguage, t } = useLanguage()
+  const { user } = useSession()
   const pathname = usePathname()
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false)
+  const [portalReady, setPortalReady] = useState(false)
   const [isScrolled, setIsScrolled] = useState(false)
   const isHome = pathname === '/'
+
+  const closeLoginModal = useCallback(() => setIsLoginModalOpen(false), [])
+
+  const openLoginModal = useCallback(() => {
+    setIsLoginModalOpen(true)
+    setIsMenuOpen(false)
+  }, [])
+
+  useEffect(() => {
+    setPortalReady(true)
+  }, [])
 
   useEffect(() => {
     if (typeof window === 'undefined') return
@@ -23,6 +41,20 @@ export default function Header() {
     window.addEventListener('scroll', handleScroll)
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
+
+  useEffect(() => {
+    if (!isLoginModalOpen) return
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') closeLoginModal()
+    }
+    window.addEventListener('keydown', onKey)
+    const prev = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    return () => {
+      window.removeEventListener('keydown', onKey)
+      document.body.style.overflow = prev
+    }
+  }, [isLoginModalOpen, closeLoginModal])
 
   const handleSmoothScroll = (e: React.MouseEvent<HTMLAnchorElement>, targetId: string) => {
     e.preventDefault()
@@ -41,6 +73,29 @@ export default function Header() {
     }
     setIsMenuOpen(false)
   }
+
+  const loginModal =
+    portalReady && !user && isLoginModalOpen
+      ? createPortal(
+          <div className="auth-modal-root">
+            <div className="auth-modal-backdrop" aria-hidden onClick={closeLoginModal} />
+            <div className="auth-modal" role="dialog" aria-modal="true" aria-labelledby="auth-modal-title">
+              <div className="auth-modal-inner">
+                <button
+                  type="button"
+                  className="auth-modal-close"
+                  onClick={closeLoginModal}
+                  aria-label={t('login.modalClose')}
+                >
+                  ×
+                </button>
+                <LoginForm variant="modal" onBeforeRegister={closeLoginModal} titleId="auth-modal-title" />
+              </div>
+            </div>
+          </div>,
+          document.body,
+        )
+      : null
 
   return (
     <header className={`header ${isScrolled ? 'scrolled' : ''}`}>
@@ -80,14 +135,34 @@ export default function Header() {
                 </Link>
               </li>
               <li>
+                <Link href="/events" className="nav-link" onClick={() => setIsMenuOpen(false)}>
+                  {t('nav.events')}
+                </Link>
+              </li>
+              <li>
                 <Link href="/contacts" className="nav-link" onClick={() => setIsMenuOpen(false)}>
                   {t('nav.contact')}
                 </Link>
               </li>
               <li>
-                <Link href="/register" className="nav-link nav-link-register" onClick={() => setIsMenuOpen(false)}>
-                  {t('nav.register')}
-                </Link>
+                {user ? (
+                  <Link href="/cabinet" className="nav-link nav-link-cabinet" onClick={() => setIsMenuOpen(false)}>
+                    {t('nav.cabinet')}
+                  </Link>
+                ) : null}
+              </li>
+              <li>
+                {user ? (
+                  <form action={logoutAction} className="nav-logout-form">
+                    <button type="submit" className="nav-link nav-link-logout">
+                      {t('nav.logout')}
+                    </button>
+                  </form>
+                ) : (
+                  <button type="button" className="nav-link nav-link-register nav-link-auth-trigger" onClick={openLoginModal}>
+                    {t('nav.login')}
+                  </button>
+                )}
               </li>
               <li>
                 <Link href="/donate" className="nav-link nav-link-donate" onClick={() => setIsMenuOpen(false)}>
@@ -121,6 +196,8 @@ export default function Header() {
           </div>
         </div>
       </nav>
+
+      {loginModal}
     </header>
   )
 }

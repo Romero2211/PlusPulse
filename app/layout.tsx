@@ -3,6 +3,7 @@ import { Inter } from 'next/font/google'
 import { Suspense } from 'react'
 import './globals.css'
 import { Providers } from '@/components/Providers'
+import { getSession } from '@/lib/session'
 
 const inter = Inter({ subsets: ['latin', 'cyrillic'] })
 
@@ -22,15 +23,22 @@ export const viewport: Viewport = {
   initialScale: 1,
 }
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
+  let sessionUser: Awaited<ReturnType<typeof getSession>> = null
+  try {
+    sessionUser = await getSession()
+  } catch {
+    sessionUser = null
+  }
+
   return (
     <html lang="uk" suppressHydrationWarning>
       <body className={inter.className} suppressHydrationWarning>
-        <Providers>
+        <Providers sessionUser={sessionUser}>
           <Suspense fallback={<div style={{ padding: '2rem', textAlign: 'center' }}>Завантаження...</div>}>
             {children}
           </Suspense>

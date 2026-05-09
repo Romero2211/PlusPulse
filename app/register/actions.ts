@@ -1,12 +1,13 @@
 'use server'
 
+import { redirect } from 'next/navigation'
 import { z } from 'zod'
 import bcrypt from 'bcryptjs'
 import { Prisma } from '@prisma/client'
 import { prisma } from '@/lib/prisma'
+import { createSession } from '@/lib/session'
 
 export type RegisterFormState = {
-  success?: boolean
   errorKey?: 'duplicate' | 'generic' | 'validation' | 'mismatch' | 'short' | 'email'
 }
 
@@ -49,18 +50,21 @@ export async function registerAction(
   const passwordHash = await bcrypt.hash(password, 10)
 
   try {
-    await prisma.user.create({
+    const user = await prisma.user.create({
       data: {
         email: email.toLowerCase(),
         name: name?.trim() || null,
         passwordHash,
       },
+      select: { id: true, email: true },
     })
-    return { success: true }
+    await createSession(user.id, user.email)
   } catch (e) {
     if (e instanceof Prisma.PrismaClientKnownRequestError && e.code === 'P2002') {
       return { errorKey: 'duplicate' }
     }
     return { errorKey: 'generic' }
   }
+
+  redirect('/')
 }

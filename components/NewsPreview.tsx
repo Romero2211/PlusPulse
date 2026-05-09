@@ -1,16 +1,14 @@
 'use client'
 
 import Link from 'next/link'
+import NewsPostList, { type NewsPostListEntry } from '@/components/NewsPostList'
 import { useLanguage } from '@/contexts/LanguageContext'
 
-export default function NewsPreview() {
-  const { t } = useLanguage()
+export type NewsPreviewPost = NewsPostListEntry
 
-  const items = [
-    { title: t('newsPreview.items.0.title'), date: t('newsPreview.items.0.date') },
-    { title: t('newsPreview.items.1.title'), date: t('newsPreview.items.1.date') },
-    { title: t('newsPreview.items.2.title'), date: t('newsPreview.items.2.date') },
-  ]
+export default function NewsPreview({ posts }: { posts: NewsPreviewPost[] }) {
+  const { t, language } = useLanguage()
+  const locale = language === 'en' ? 'en' : 'uk'
 
   return (
     <section id="news" className="news-preview">
@@ -21,14 +19,11 @@ export default function NewsPreview() {
           <p className="section-description">{t('newsPreview.description')}</p>
         </div>
 
-        <div className="news-preview-list">
-          {items.map((item) => (
-            <div key={item.title} className="news-preview-item">
-              <div className="news-preview-date">{item.date}</div>
-              <div className="news-preview-title">{item.title}</div>
-            </div>
-          ))}
-        </div>
+        {posts.length === 0 ? (
+          <p className="events-empty">{t('newsPreview.empty')}</p>
+        ) : (
+          <NewsPostList posts={posts} locale={locale} />
+        )}
 
         <div className="news-preview-actions">
           <Link className="btn btn-primary" href="/news">
@@ -39,4 +34,3 @@ export default function NewsPreview() {
     </section>
   )
 }
-

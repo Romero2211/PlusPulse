@@ -15,11 +15,21 @@ model User {
   email        String   @unique
   name         String?
   passwordHash String
+  /// Публічний опис / «про себе»
+  bio          String?
+  phone        String?
+  city         String?
+  /// Шлях від кореня сайту, напр. /uploads/avatars/{id}/avatar.jpg
+  avatarUrl    String?
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
-  hostedEvents   Event[]              @relation("EventHost")
-  participations EventParticipant[]
+  hostedEvents            Event[]                 @relation("EventHost")
+  participations        EventParticipant[]
+  eventMessages         EventMessage[]
+  newsPosts             NewsPost[]
+  fundraisers           Fundraiser[]
+  eventPendingApprovals EventPendingApproval[]
 }
 
 /// Волонтерський захід
@@ -30,7 +40,14 @@ model Event {
   /// Причина / мета зустрічі (окремо від загального опису)
   reason      String?
   startsAt    DateTime
+  /// Якщо встановлено — захід завершено/архівовано (ручне або автоматичне архівування в UI/логіці).
+  archivedAt  DateTime?
   location    String
+  /// WGS84, для відображення на карті; обидва null — лише текстова адреса
+  latitude    Float?
+  longitude   Float?
+  /// Максимум учасників (без організатора); null — без обмеження
+  maxParticipants Int?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
@@ -38,6 +55,50 @@ model Event {
   host   User   @relation("EventHost", fields: [hostId], references: [id], onDelete: Cascade)
 
   participants EventParticipant[]
+  messages     EventMessage[]
+}
+
+/// Заявка на захід, що потребує ручного схвалення адміном (збій AI або неоднозначна відповідь моделі)
+model EventPendingApproval {
+  id                 String   @id @default(cuid())
+  /// "create" | "edit"
+  kind               String
+  /// Для kind=edit — id існуючого заходу
+  targetEventId      String?
+  title              String
+  description        String?
+  reason             String?
+  startsAt           DateTime
+  location           String
+  latitude           Float?
+  longitude          Float?
+  maxParticipants    Int?
+  hostId             String
+  host               User     @relation(fields: [hostId], references: [id], onDelete: Cascade)
+  /// "ambiguous" | "service_error"
+  source             String
+  /// Для service_error: missing_key | timeout | api | parse
+  serviceErrorReason String?
+
+  createdAt DateTime @default(now())
+
+  @@index([hostId])
+  @@index([createdAt])
+}
+
+/// Повідомлення в чаті заходу (видно лише учасникам та організатору на рівні додатку)
+model EventMessage {
+  id        String   @id @default(cuid())
+  body      String
+  createdAt DateTime @default(now())
+
+  eventId String
+  event   Event @relation(fields: [eventId], references: [id], onDelete: Cascade)
+
+  userId String
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([eventId, createdAt])
 }
 
 /// Учасник заходу (унікальна пара event + user)
@@ -52,4 +113,45 @@ model EventParticipant {
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([eventId, userId])
+}
+
+/// Новина / пост фонду
+model NewsPost {
+  id            String   @id @default(cuid())
+  title         String
+  slug          String   @unique
+  excerpt       String?
+  body          String
+  coverImageUrl String?
+  gallery       Json?
+  publishedAt   DateTime?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  authorId String
+  author   User   @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  @@index([publishedAt])
+}
+
+/// Збір коштів / кампанія
+model Fundraiser {
+  id            String   @id @default(cuid())
+  title         String
+  tag           String?
+  description   String
+  goalAmount    Int
+  raisedAmount  Int      @default(0)
+  coverImageUrl String?
+  gallery       Json?
+  publishedAt   DateTime?
+  archivedAt    DateTime?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  authorId String
+  author   User   @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  @@index([publishedAt])
+  @@index([archivedAt])
 }

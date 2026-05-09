@@ -1,5 +1,5 @@
 import Header from '@/components/Header'
-import ProgramsPreview from '@/components/ProgramsPreview'
+import DonateFundraisersSection from '@/components/DonateFundraisersSection'
 import Transparency from '@/components/Transparency'
 import Donate from '@/components/Donate'
 import Footer from '@/components/Footer'
@@ -8,6 +8,8 @@ export const metadata = {
   title: 'Допомогти | Програми, прозорість | БО БФ «ПЛЮС ПУЛЬС»',
   description: 'Програми та збори, прозорість та звітність, як зробити внесок — благодійний фонд «ПЛЮС ПУЛЬС».',
 }
+
+export const dynamic = 'force-dynamic'
 
 export default function DonatePage() {
   return (
@@ -22,7 +24,7 @@ export default function DonatePage() {
             </p>
           </div>
         </section>
-        <ProgramsPreview />
+        <DonateFundraisersSection />
         <Transparency />
         <Donate />
       </main>
