@@ -49,7 +49,7 @@ PlusPulse/
 
 ### Вимоги
 
-- Node.js 18+
+- Node.js 20+ (рекомендовано останній LTS або Current з [nodejs.org](https://nodejs.org/))
 - npm або yarn
 
 ### Кроки

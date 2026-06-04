@@ -43,6 +43,8 @@ model Event {
   /// Якщо встановлено — захід завершено/архівовано (ручне або автоматичне архівування в UI/логіці).
   archivedAt  DateTime?
   location    String
+  /// Ключ району Києва (holosiivskyi, pecherskyi, …) для фільтрації
+  district    String?
   /// WGS84, для відображення на карті; обидва null — лише текстова адреса
   latitude    Float?
   longitude   Float?
@@ -73,6 +75,7 @@ model EventPendingApproval {
   latitude           Float?
   longitude          Float?
   maxParticipants    Int?
+  district           String?
   hostId             String
   host               User     @relation(fields: [hostId], references: [id], onDelete: Cascade)
   /// "ambiguous" | "service_error"
@@ -154,4 +157,15 @@ model Fundraiser {
 
   @@index([publishedAt])
   @@index([archivedAt])
+}
+
+/// Повідомлення з форми зворотного зв’язку (сторінка «Контакти»)
+model ContactFeedback {
+  id        String   @id @default(cuid())
+  name      String?
+  email     String?
+  message   String
+  createdAt DateTime @default(now())
+
+  @@index([createdAt])
 }

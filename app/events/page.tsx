@@ -4,6 +4,7 @@ import Footer from '@/components/Footer'
 import EventsView, { type EventListItem } from '@/components/EventsView'
 import { getSession } from '@/lib/session'
 import { prisma } from '@/lib/prisma'
+import { resolveEventDistrict } from '@/lib/kyivDistricts'
 
 export const metadata: Metadata = {
   title: 'Заходи | БО БФ «ПЛЮС ПУЛЬС»',
@@ -35,6 +36,13 @@ export default async function EventsPage() {
 
   const events: EventListItem[] = rows.map((e) => {
     const isArchived = Boolean(e.archivedAt) || e.startsAt.getTime() < nowMs - autoArchiveMs
+    const districtKey = resolveEventDistrict({
+      district: e.district,
+      latitude: e.latitude,
+      longitude: e.longitude,
+      location: e.location,
+    })
+
     return {
     id: e.id,
     title: e.title,
@@ -42,6 +50,7 @@ export default async function EventsPage() {
     description: e.description,
     startsAt: e.startsAt.toISOString(),
     location: e.location,
+    districtKey,
     latitude: e.latitude,
     longitude: e.longitude,
     hostDisplay: e.host.name?.trim() || e.host.email,

@@ -3,6 +3,11 @@
 import Link from 'next/link'
 import { useMemo, useState } from 'react'
 import { useLanguage } from '@/contexts/LanguageContext'
+import {
+  KYIV_DISTRICTS,
+  districtLabel,
+  type KyivDistrictId,
+} from '@/lib/kyivDistricts'
 import EventArchiveForm from '@/components/EventArchiveForm'
 import EventDeleteForm from '@/components/EventDeleteForm'
 import EventJoinForm from '@/components/EventJoinForm'
@@ -15,6 +20,7 @@ export type EventListItem = {
   description: string | null
   startsAt: string
   location: string
+  districtKey: KyivDistrictId | null
   latitude: number | null
   longitude: number | null
   hostDisplay: string
@@ -62,19 +68,49 @@ function trimFilterDate(s: string): string | null {
   return trimmed === '' ? null : trimmed
 }
 
-function filterEventsByDateRange(
+function normalizeSearchQuery(q: string): string {
+  return q.trim().toLocaleLowerCase('uk-UA')
+}
+
+function eventMatchesSearch(e: EventListItem, query: string): boolean {
+  if (!query) return true
+  const haystack = [
+    e.title,
+    e.reason ?? '',
+    e.description ?? '',
+    e.location,
+    e.hostDisplay,
+    districtLabel(e.districtKey, 'uk') ?? '',
+    districtLabel(e.districtKey, 'en') ?? '',
+  ]
+    .join(' ')
+    .toLocaleLowerCase('uk-UA')
+  return haystack.includes(query)
+}
+
+function filterEventsList(
   items: EventListItem[],
-  fromYmd: string | null,
-  toYmd: string | null,
+  opts: {
+    fromYmd: string | null
+    toYmd: string | null
+    searchQuery: string
+    districtId: KyivDistrictId | ''
+  },
 ): EventListItem[] {
-  if (!fromYmd && !toYmd) {
-    return items
-  }
-  const fromMs = fromYmd ? new Date(`${fromYmd}T00:00:00`).getTime() : -Infinity
-  const toMs = toYmd ? new Date(`${toYmd}T23:59:59.999`).getTime() : Infinity
+  const q = normalizeSearchQuery(opts.searchQuery)
+  const fromMs = opts.fromYmd ? new Date(`${opts.fromYmd}T00:00:00`).getTime() : -Infinity
+  const toMs = opts.toYmd ? new Date(`${opts.toYmd}T23:59:59.999`).getTime() : Infinity
+
   return items.filter((e) => {
-    const ms = new Date(e.startsAt).getTime()
-    return ms >= fromMs && ms <= toMs
+    if (opts.fromYmd || opts.toYmd) {
+      const ms = new Date(e.startsAt).getTime()
+      if (ms < fromMs || ms > toMs) return false
+    }
+    if (opts.districtId) {
+      if (e.districtKey !== opts.districtId) return false
+    }
+    if (!eventMatchesSearch(e, q)) return false
+    return true
   })
 }
 
@@ -86,9 +122,12 @@ export default function EventsView({ events, isLoggedIn }: { events: EventListIt
 
   const [fromDate, setFromDate] = useState('')
   const [toDate, setToDate] = useState('')
+  const [searchQuery, setSearchQuery] = useState('')
+  const [districtFilter, setDistrictFilter] = useState<KyivDistrictId | ''>('')
 
   const normFrom = trimFilterDate(fromDate)
   const normTo = trimFilterDate(toDate)
+  const normSearch = normalizeSearchQuery(searchQuery)
 
   const minToInput = normFrom !== null && normFrom >= todayYmd ? normFrom : todayYmd
   const fromMaxInput = normTo !== null && normTo >= todayYmd ? normTo : undefined
@@ -125,16 +164,23 @@ export default function EventsView({ events, isLoggedIn }: { events: EventListIt
   }, [events])
 
   const filteredActiveEvents = useMemo(
-    () => filterEventsByDateRange(activeEvents, normFrom, normTo),
-    [activeEvents, normFrom, normTo],
+    () =>
+      filterEventsList(activeEvents, {
+        fromYmd: normFrom,
+        toYmd: normTo,
+        searchQuery: normSearch,
+        districtId: districtFilter,
+      }),
+    [activeEvents, normFrom, normTo, normSearch, districtFilter],
   )
-  const filtersActive = Boolean(normFrom || normTo)
+  const filtersActive = Boolean(normFrom || normTo || normSearch || districtFilter)
 
   const filterCountLabel = t('events.filterCount')
     .replace('{shown}', String(filteredActiveEvents.length))
     .replace('{total}', String(activeEvents.length))
 
   const filterRulesId = 'events-filter-date-rules'
+  const lang = language === 'en' ? 'en' : 'uk'
 
   return (
     <>
@@ -154,7 +200,35 @@ export default function EventsView({ events, isLoggedIn }: { events: EventListIt
 
             {events.length > 0 ? (
               <div className="events-date-filter" role="search" aria-label={t('events.filterAria')}>
+                <label className="events-date-filter-field events-date-filter-field--search">
+                  <span>{t('events.searchLabel')}</span>
+                  <input
+                    type="search"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    placeholder={t('events.searchPlaceholder')}
+                    className="events-date-filter-input events-date-filter-input--search"
+                    autoComplete="off"
+                  />
+                </label>
                 <div className="events-date-filter-fields">
+                  <label className="events-date-filter-field">
+                    <span>{t('events.filterDistrict')}</span>
+                    <select
+                      value={districtFilter}
+                      onChange={(e) =>
+                        setDistrictFilter((e.target.value || '') as KyivDistrictId | '')
+                      }
+                      className="events-date-filter-input events-date-filter-select"
+                    >
+                      <option value="">{t('events.filterDistrictAll')}</option>
+                      {KYIV_DISTRICTS.map((d) => (
+                        <option key={d.id} value={d.id}>
+                          {lang === 'en' ? d.nameEn : d.nameUk}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
                   <label className="events-date-filter-field">
                     <span>{t('events.filterDateFrom')}</span>
                     <input
@@ -179,6 +253,9 @@ export default function EventsView({ events, isLoggedIn }: { events: EventListIt
                     />
                   </label>
                 </div>
+                <p id={filterRulesId} className="events-filter-hint">
+                  {t('events.filterHint')}
+                </p>
                 <div className="events-date-filter-actions">
                   {filtersActive ? (
                     <button
@@ -187,9 +264,11 @@ export default function EventsView({ events, isLoggedIn }: { events: EventListIt
                       onClick={() => {
                         setFromDate('')
                         setToDate('')
+                        setSearchQuery('')
+                        setDistrictFilter('')
                       }}
                     >
-                      {t('events.filterClear')}
+                      {t('events.filterClearAll')}
                     </button>
                   ) : null}
                   {filtersActive ? <p className="events-filter-count">{filterCountLabel}</p> : null}
@@ -214,6 +293,14 @@ export default function EventsView({ events, isLoggedIn }: { events: EventListIt
                       <time dateTime={e.startsAt}>{formatStarts(e.startsAt, locale)}</time>
                       {' · '}
                       <span>{e.location}</span>
+                      {e.districtKey ? (
+                        <>
+                          {' · '}
+                          <span className="events-card-district">
+                            {districtLabel(e.districtKey, lang)}
+                          </span>
+                        </>
+                      ) : null}
                     </p>
                     {e.latitude != null && e.longitude != null ? (
                       <p className="events-card-map-link-wrap">

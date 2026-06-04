@@ -12,7 +12,7 @@ export default function ContactsPage() {
     <>
       <Header />
       <main className="page-below-header">
-        <Contact />
+        <Contact showFeedbackForm />
       </main>
       <Footer />
     </>

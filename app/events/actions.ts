@@ -5,7 +5,7 @@ import { z } from 'zod'
 import { revalidatePath } from 'next/cache'
 import { prisma } from '@/lib/prisma'
 import { getSession } from '@/lib/session'
-import { locationLabelFromCoordinates } from '@/lib/reverseGeocode'
+import { locationInfoFromCoordinates } from '@/lib/reverseGeocode'
 import { isCoordinatesInKyiv } from '@/lib/kyivBounds'
 import {
   reviewVolunteerEventWithGemini,
@@ -123,6 +123,7 @@ type PendingPayload = {
   description: string | null
   startsAt: Date
   location: string
+  district: string | null
   latitude: number | null
   longitude: number | null
   maxParticipants: number | null
@@ -141,6 +142,7 @@ async function queueEventForAdminReview(data: PendingPayload): Promise<void> {
       description: data.description,
       startsAt: data.startsAt,
       location: data.location,
+      district: data.district,
       latitude: data.latitude,
       longitude: data.longitude,
       maxParticipants: data.maxParticipants,
@@ -215,7 +217,7 @@ export async function createEventAction(
     return { errorKey: 'aiReject', aiRejectCode: aiVerdict.code }
   }
 
-  const locationLabel = await locationLabelFromCoordinates(coords.lat, coords.lng)
+  const { label: locationLabel, districtKey } = await locationInfoFromCoordinates(coords.lat, coords.lng)
 
   if (aiVerdict.type === 'manual_review' || aiVerdict.type === 'service_error') {
     const source = aiVerdict.type === 'manual_review' ? 'ambiguous' : 'service_error'
@@ -229,6 +231,7 @@ export async function createEventAction(
         description: description ? description : null,
         startsAt,
         location: locationLabel,
+        district: districtKey,
         latitude: coords.lat,
         longitude: coords.lng,
         maxParticipants: maxParsed.value,
@@ -249,6 +252,7 @@ export async function createEventAction(
         reason: reason || null,
         description: description || null,
         location: locationLabel,
+        district: districtKey,
         startsAt,
         maxParticipants: maxParsed.value,
         latitude: coords.lat,
@@ -355,7 +359,7 @@ export async function updateEventAction(
     return { errorKey: 'aiReject', aiRejectCode: aiVerdict.code }
   }
 
-  const locationLabel = await locationLabelFromCoordinates(coords.lat, coords.lng)
+  const { label: locationLabel, districtKey } = await locationInfoFromCoordinates(coords.lat, coords.lng)
 
   if (aiVerdict.type === 'manual_review' || aiVerdict.type === 'service_error') {
     const source = aiVerdict.type === 'manual_review' ? 'ambiguous' : 'service_error'
@@ -369,6 +373,7 @@ export async function updateEventAction(
         description: description ? description : null,
         startsAt,
         location: locationLabel,
+        district: districtKey,
         latitude: coords.lat,
         longitude: coords.lng,
         maxParticipants: maxParsed.value,
@@ -390,6 +395,7 @@ export async function updateEventAction(
         reason: reason || null,
         description: description || null,
         location: locationLabel,
+        district: districtKey,
         startsAt,
         maxParticipants: maxParsed.value,
         latitude: coords.lat,

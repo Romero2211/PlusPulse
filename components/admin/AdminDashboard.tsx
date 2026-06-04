@@ -19,6 +19,9 @@ export default function AdminDashboard() {
         <Link className="admin-tile" href="/admin/events">
           {t('admin.tileEvents')}
         </Link>
+        <Link className="admin-tile" href="/admin/feedback">
+          {t('admin.tileFeedback')}
+        </Link>
       </div>
     </section>
   )

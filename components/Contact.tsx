@@ -2,8 +2,14 @@
 
 import { useMemo } from 'react'
 import { useLanguage } from '@/contexts/LanguageContext'
+import ContactFeedbackForm from '@/components/ContactFeedbackForm'
 
-export default function Contact() {
+type ContactProps = {
+  /** Форма зворотного зв’язку лише на сторінці «Контакти», не на головній */
+  showFeedbackForm?: boolean
+}
+
+export default function Contact({ showFeedbackForm = false }: ContactProps) {
   const { t } = useLanguage()
 
   const contacts = useMemo(() => [
@@ -47,6 +53,7 @@ export default function Contact() {
             </div>
           ))}
         </div>
+        {showFeedbackForm ? <ContactFeedbackForm /> : null}
       </div>
     </section>
   )

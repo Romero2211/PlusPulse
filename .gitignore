@@ -17,6 +17,16 @@
 .DS_Store
 *.pem
 
+# test reports (regenerate with npm run test:cinimex)
+tests/cinimex/results/report.json
+tests/cinimex/results/report.html
+playwright-report/
+tests/integration/test-results/
+
+# code metrics (regenerate with npm run metrics)
+reports/code-metrics-report.html
+reports/code-metrics-report.csv
+
 # debug
 npm-debug.log*
 yarn-debug.log*
@@ -36,6 +46,8 @@ next-env.d.ts
 # prisma / sqlite local
 prisma/dev.db
 prisma/dev.db-journal
+prisma/integration-test.db
+prisma/integration-test.db-journal
 
 # локальні завантаження (не комітити бінарники)
 public/uploads/avatars/**

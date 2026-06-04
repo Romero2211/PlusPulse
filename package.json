@@ -2,6 +2,9 @@
   "name": "plus-pulse-charity",
   "version": "1.0.0",
   "private": true,
+  "engines": {
+    "node": ">=20"
+  },
   "description": "Благодійна організація «Благодійний фонд «ПЛЮС ПУЛЬС»",
   "scripts": {
     "dev": "next dev",
@@ -12,7 +15,11 @@
     "db:generate": "prisma generate",
     "db:migrate": "prisma migrate dev",
     "db:push": "prisma db push",
-    "db:studio": "prisma studio"
+    "db:studio": "prisma studio",
+    "test:cinimex": "node scripts/run-cinimex-scenarios.mjs",
+    "metrics": "node scripts/code-metrics-report.mjs",
+    "test:integration": "playwright test -c tests/integration/playwright.config.ts",
+    "test:integration:headed": "playwright test -c tests/integration/playwright.config.ts --headed"
   },
   "dependencies": {
     "@google/generative-ai": "^0.24.1",
@@ -32,12 +39,15 @@
   "devDependencies": {
     "@types/bcryptjs": "^2.4.6",
     "@types/leaflet": "^1.9.21",
-    "@types/node": "^20.0.0",
+    "@types/node": "^22.0.0",
     "@types/react": "^18.2.0",
     "@types/react-dom": "^18.2.0",
+    "@playwright/test": "^1.54.2",
     "eslint": "^8.57.0",
     "eslint-config-next": "15.4.10",
     "prisma": "^6.3.1",
-    "typescript": "^5.0.0"
+    "typescript": "^5.0.0",
+    "@babel/parser": "^7.26.0",
+    "@babel/traverse": "^7.26.0"
   }
 }

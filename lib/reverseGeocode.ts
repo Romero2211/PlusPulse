@@ -1,6 +1,27 @@
-/** Текст локації для збереження в БД: OSM Nominatim або рядок координат. */
-export async function locationLabelFromCoordinates(lat: number, lng: number): Promise<string> {
-  const url = `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${encodeURIComponent(String(lat))}&lon=${encodeURIComponent(String(lng))}`
+import {
+  getKyivDistrictIdFromCoordinates,
+  normalizeDistrictKey,
+  type KyivDistrictId,
+} from '@/lib/kyivDistricts'
+
+export type LocationGeocodeResult = {
+  label: string
+  districtKey: KyivDistrictId | null
+}
+
+type NominatimAddress = {
+  city_district?: string
+  suburb?: string
+  borough?: string
+  state_district?: string
+}
+
+/** Текст локації та район Києва: OSM Nominatim або координати. */
+export async function locationInfoFromCoordinates(
+  lat: number,
+  lng: number,
+): Promise<LocationGeocodeResult> {
+  const url = `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${encodeURIComponent(String(lat))}&lon=${encodeURIComponent(String(lng))}&addressdetails=1`
   try {
     const res = await fetch(url, {
       headers: {
@@ -13,13 +34,31 @@ export async function locationLabelFromCoordinates(lat: number, lng: number): Pr
     if (!res.ok) {
       throw new Error('nominatim')
     }
-    const data = (await res.json()) as { display_name?: string }
+    const data = (await res.json()) as {
+      display_name?: string
+      address?: NominatimAddress
+    }
     const name = typeof data.display_name === 'string' ? data.display_name.trim() : ''
+    const addr = data.address
+    const districtFromAddr = normalizeDistrictKey(
+      addr?.city_district ?? addr?.suburb ?? addr?.borough ?? addr?.state_district ?? null,
+    )
+    const districtKey = districtFromAddr ?? getKyivDistrictIdFromCoordinates(lat, lng)
+
     if (name.length >= 2) {
-      return name.slice(0, 500)
+      return { label: name.slice(0, 500), districtKey }
     }
   } catch {
     // ignore
   }
-  return `${lat.toFixed(5)}, ${lng.toFixed(5)}`
+  return {
+    label: `${lat.toFixed(5)}, ${lng.toFixed(5)}`,
+    districtKey: getKyivDistrictIdFromCoordinates(lat, lng),
+  }
+}
+
+/** Текст локації для збереження в БД: OSM Nominatim або рядок координат. */
+export async function locationLabelFromCoordinates(lat: number, lng: number): Promise<string> {
+  const { label } = await locationInfoFromCoordinates(lat, lng)
+  return label
 }
