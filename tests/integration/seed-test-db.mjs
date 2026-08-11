@@ -24,6 +24,7 @@ try {
   await prisma.eventPendingApproval.deleteMany()
   await prisma.event.deleteMany()
   await prisma.newsPost.deleteMany()
+  await prisma.fundraiserReport.deleteMany()
   await prisma.fundraiser.deleteMany()
   await prisma.user.deleteMany()
 

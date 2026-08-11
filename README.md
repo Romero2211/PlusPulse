@@ -122,20 +122,21 @@ const translations: Record<Language, Record<string, string>> = {
 
 ## Деплой
 
-### Vercel (рекомендовано)
+Детальна інструкція: **[DEPLOY.md](./DEPLOY.md)** (Vercel + PostgreSQL).
 
-1. Пуште код на GitHub
-2. Імпортуйте проект в Vercel
-3. Vercel автоматично визначить Next.js і збере проект
+Коротко:
 
-### Інші платформи
+1. PostgreSQL (Vercel Postgres або Neon)
+2. Змінні `DATABASE_URL`, `DIRECT_DATABASE_URL`, `AUTH_SECRET`, `ADMIN_EMAILS`
+3. Push на GitHub → Import у Vercel
+
+Локально:
 
 ```bash
-# Збірка
-npm run build
-
-# Створення standalone версії
-# (вже налаштовано в next.config.js)
+npm run db:up          # Docker PostgreSQL
+cp .env.example .env   # налаштуйте AUTH_SECRET
+npm run db:migrate:deploy
+npm run dev
 ```
 
 ## Ліцензія

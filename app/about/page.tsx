@@ -1,4 +1,5 @@
 import Header from '@/components/Header'
+import PageHero from '@/components/PageHero'
 import About from '@/components/About'
 import Activities from '@/components/Activities'
 import Mission from '@/components/Mission'
@@ -15,6 +16,10 @@ export default function AboutPage() {
     <>
       <Header />
       <main className="page-below-header">
+        <PageHero
+          title="Про організацію"
+          description="Благодійний фонд «ПЛЮС ПУЛЬС» — прозора неприбуткова організація, що працює відповідно до законодавства України."
+        />
         <About />
         <Activities />
         <Mission />

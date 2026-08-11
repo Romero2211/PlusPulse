@@ -22,7 +22,7 @@ export default function NotFound() {
       <Link
         href="/"
         style={{
-          color: '#2563eb',
+          color: '#1a3d8f',
           fontWeight: 600,
           textDecoration: 'none',
         }}

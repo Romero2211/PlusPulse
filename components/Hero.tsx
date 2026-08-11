@@ -1,5 +1,6 @@
 'use client'
 
+import Image from 'next/image'
 import { useLanguage } from '@/contexts/LanguageContext'
 
 export default function Hero() {
@@ -24,14 +25,13 @@ export default function Hero() {
 
   return (
     <section id="home" className="hero">
-      <div className="hero-overlay"></div>
-      <div className="container">
-        <div className="hero-content">
-          <h2 className="hero-title">{t('hero.title')}</h2>
-          <h3 className="hero-subtitle">{t('hero.subtitle')}</h3>
-          <p className="hero-description">{t('hero.description')}</p>
+      <div className="hero-overlay" aria-hidden />
+      <div className="container hero-inner">
+        <div className="hero-text">
+          <h1 className="hero-headline">{t('hero.headline')}</h1>
+          <p className="hero-tagline">{t('hero.tagline')}</p>
           <div className="hero-buttons">
-            <a href="#donate" className="btn btn-primary" onClick={(e) => handleSmoothScroll(e, '#donate')}>
+            <a href="#programs" className="btn btn-primary" onClick={(e) => handleSmoothScroll(e, '#programs')}>
               {t('hero.donate')}
             </a>
             <a href="#about" className="btn btn-secondary" onClick={(e) => handleSmoothScroll(e, '#about')}>
@@ -39,9 +39,19 @@ export default function Hero() {
             </a>
           </div>
         </div>
-      </div>
-      <div className="scroll-indicator">
-        <div className="mouse"></div>
+        <div className="hero-visual">
+          <div className="hero-image-wrap">
+            <Image
+              src="/images/hero-children.jpg"
+              alt=""
+              width={440}
+              height={520}
+              className="hero-image"
+              priority
+              sizes="(max-width: 968px) 360px, 440px"
+            />
+          </div>
+        </div>
       </div>
     </section>
   )

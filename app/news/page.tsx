@@ -1,5 +1,6 @@
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
+import PageHero from '@/components/PageHero'
 import NewsPostList from '@/components/NewsPostList'
 import { prisma } from '@/lib/prisma'
 
@@ -38,9 +39,12 @@ export default async function NewsPage() {
     <>
       <Header />
       <main className="page-below-header">
-        <section className="news-page">
+        <PageHero
+          title="Новини"
+          description="Новини фонду, звіти з подій, кампанії та інші оновлення."
+        />
+        <section className="news-page inner-page-body inner-page-body--white">
           <div className="container">
-            <h1 className="events-page-title">Новини</h1>
             {posts.length === 0 ? (
               <p className="events-empty">Поки немає опублікованих новин.</p>
             ) : (

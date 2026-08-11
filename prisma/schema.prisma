@@ -5,8 +5,9 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_DATABASE_URL")
 }
 
 /// Користувач (під майбутню реєстрацію / auth)
@@ -147,6 +148,8 @@ model Fundraiser {
   raisedAmount  Int      @default(0)
   coverImageUrl String?
   gallery       Json?
+  /// Дата завершення збору (для відображення «днів до завершення»)
+  endsAt        DateTime?
   publishedAt   DateTime?
   archivedAt    DateTime?
   createdAt     DateTime @default(now())
@@ -155,8 +158,25 @@ model Fundraiser {
   authorId String
   author   User   @relation(fields: [authorId], references: [id], onDelete: Cascade)
 
+  reports FundraiserReport[]
+
   @@index([publishedAt])
   @@index([archivedAt])
+}
+
+/// Запис звітності збору (витрати / надходження)
+model FundraiserReport {
+  id           String   @id @default(cuid())
+  occurredAt   DateTime
+  description  String
+  /// Сума в гривнях; від’ємна — витрата, додатна — надходження
+  amount       Int
+  createdAt    DateTime @default(now())
+
+  fundraiserId String
+  fundraiser   Fundraiser @relation(fields: [fundraiserId], references: [id], onDelete: Cascade)
+
+  @@index([fundraiserId, occurredAt])
 }
 
 /// Повідомлення з форми зворотного зв’язку (сторінка «Контакти»)

@@ -6,10 +6,13 @@
 }
 
 :root {
-    --primary-color: #2563eb;
-    --primary-dark: #1e40af;
+    --primary-color: #1e40af;
+    --primary-dark: #172554;
     --secondary-color: #10b981;
-    --accent-color: #f59e0b;
+    --accent-color: #f5c518;
+    --accent-yellow: #f5c518;
+    --brand-blue: #1a3d8f;
+    --brand-blue-dark: #0f2557;
     --text-primary: #1f2937;
     --text-secondary: #6b7280;
     --bg-light: #f9fafb;
@@ -71,6 +74,39 @@ body {
     line-height: 0;
 }
 
+.logo-brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    text-decoration: none;
+    line-height: 1.1;
+    flex-shrink: 0;
+}
+
+.logo-brand-icon {
+    display: block;
+    width: auto;
+    height: 42px;
+    object-fit: contain;
+    flex-shrink: 0;
+}
+
+.logo-brand--footer .logo-brand-icon {
+    height: 48px;
+}
+
+.logo-brand-text {
+    font-size: 1.35rem;
+    font-weight: 800;
+    color: var(--brand-blue-dark);
+    letter-spacing: -0.02em;
+    white-space: nowrap;
+}
+
+.logo-brand--footer .logo-brand-text {
+    font-size: 1.5rem;
+}
+
 .logo-image {
     display: block;
     width: auto;
@@ -117,11 +153,13 @@ body {
 }
 
 .nav-link-donate {
-    background: var(--primary-color);
-    color: white !important;
+    background: var(--accent-yellow);
+    color: var(--brand-blue-dark) !important;
     padding: 0.5rem 1.5rem;
     border-radius: 0.5rem;
-    margin-left: 1rem;
+    margin-left: 0;
+    font-weight: 700;
+    border: none;
 }
 
 .nav-link-donate::after {
@@ -129,7 +167,8 @@ body {
 }
 
 .nav-link-donate:hover {
-    background: var(--primary-dark);
+    background: #ffe066;
+    color: var(--brand-blue-dark) !important;
     transform: translateY(-2px);
     box-shadow: var(--shadow-md);
 }
@@ -1302,10 +1341,17 @@ section {
 }
 
 .footer-brand {
-    display: inline-block;
-    line-height: 0;
+    display: inline-flex;
     margin-bottom: 1rem;
     text-decoration: none;
+}
+
+.footer .logo-brand-text {
+    color: #fff;
+}
+
+.footer .logo-brand-icon {
+    filter: brightness(0) invert(1);
 }
 
 .footer-logo {
@@ -1420,7 +1466,7 @@ main.page-below-header > section:first-child:not(.donate-page-hero) {
 }
 
 main.page-below-header .donate-page-hero {
-    padding: 7.25rem 0 3rem;
+    padding: 8.75rem 0 3.5rem;
 }
 
 /* Сторінка реєстрації / кабінет */
@@ -2706,6 +2752,25 @@ main.events-new-page .events-create {
     box-shadow: var(--shadow-sm);
 }
 
+.fundraiser-card-link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+    height: 100%;
+}
+
+.fundraiser-card-link .fundraiser-card {
+    height: 100%;
+    transition: var(--transition);
+    cursor: pointer;
+}
+
+.fundraiser-card-link:hover .fundraiser-card {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+    border-color: rgba(26, 61, 143, 0.25);
+}
+
 .fundraiser-card-archived {
     opacity: 0.92;
 }
@@ -3222,10 +3287,6 @@ main.events-new-page .events-create {
 
     .nav-wrapper {
         gap: 1rem;
-    }
-
-    .language-switcher {
-        order: -1;
     }
 }
 

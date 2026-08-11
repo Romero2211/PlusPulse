@@ -114,7 +114,15 @@ function filterEventsList(
   })
 }
 
-export default function EventsView({ events, isLoggedIn }: { events: EventListItem[]; isLoggedIn: boolean }) {
+export default function EventsView({
+  events,
+  isLoggedIn,
+  hidePageHeader = false,
+}: {
+  events: EventListItem[]
+  isLoggedIn: boolean
+  hidePageHeader?: boolean
+}) {
   const { t, language } = useLanguage()
   const locale = language === 'en' ? 'en' : 'uk'
 
@@ -184,10 +192,14 @@ export default function EventsView({ events, isLoggedIn }: { events: EventListIt
 
   return (
     <>
-      <h1 className="events-page-title">{t('events.pageTitle')}</h1>
-      <p className="events-page-lead">
-        {isLoggedIn ? t('events.pageLeadAuthed') : t('events.pageLead')}
-      </p>
+      {!hidePageHeader ? (
+        <>
+          <h1 className="events-page-title">{t('events.pageTitle')}</h1>
+          <p className="events-page-lead">
+            {isLoggedIn ? t('events.pageLeadAuthed') : t('events.pageLead')}
+          </p>
+        </>
+      ) : null}
 
       {!isLoggedIn ? <p className="events-login-hint">{t('events.loginToCreate')}</p> : null}
 

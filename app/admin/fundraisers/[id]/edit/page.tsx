@@ -5,6 +5,7 @@ import Footer from '@/components/Footer'
 import { requireAdmin } from '@/lib/admin'
 import { prisma } from '@/lib/prisma'
 import AdminFundraiserForm from '@/components/admin/AdminFundraiserForm'
+import AdminFundraiserReportsPanel from '@/components/admin/AdminFundraiserReportsPanel'
 
 export const metadata: Metadata = {
   title: 'Адмін · Редагування збору',
@@ -29,6 +30,15 @@ export default async function AdminFundraisersEditPage(props: Props) {
       coverImageUrl: true,
       publishedAt: true,
       archivedAt: true,
+      reports: {
+        orderBy: { occurredAt: 'desc' },
+        select: {
+          id: true,
+          occurredAt: true,
+          description: true,
+          amount: true,
+        },
+      },
     },
   })
   if (!row) notFound()
@@ -51,6 +61,15 @@ export default async function AdminFundraisersEditPage(props: Props) {
               published: !!row.publishedAt,
               archived: !!row.archivedAt,
             }}
+          />
+          <AdminFundraiserReportsPanel
+            fundraiserId={row.id}
+            reports={row.reports.map((r) => ({
+              id: r.id,
+              occurredAtIso: r.occurredAt.toISOString(),
+              description: r.description,
+              amount: r.amount,
+            }))}
           />
         </div>
       </main>

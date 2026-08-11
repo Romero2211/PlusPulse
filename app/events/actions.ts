@@ -15,7 +15,6 @@ import {
 
 export type CreateEventFormState = {
   success?: boolean
-  /** Заявка збережена для ручного схвалення адміном (збій AI або needs_review) */
   pendingModeration?: boolean
   errorKey?:
     | 'unauth'

@@ -3,6 +3,10 @@ import { defineConfig } from '@playwright/test'
 const PORT = 3101
 const BASE_URL = `http://127.0.0.1:${PORT}`
 
+const TEST_DATABASE_URL =
+  process.env.TEST_DATABASE_URL ||
+  'postgresql://pluspulse:pluspulse@127.0.0.1:5433/pluspulse?schema=public'
+
 export default defineConfig({
   testDir: __dirname,
   testMatch: /.*\.spec\.ts/,
@@ -29,7 +33,8 @@ export default defineConfig({
     stdout: 'pipe',
     stderr: 'pipe',
     env: {
-      DATABASE_URL: 'file:./integration-test.db',
+      DATABASE_URL: TEST_DATABASE_URL,
+      DIRECT_DATABASE_URL: TEST_DATABASE_URL,
       AUTH_SECRET: 'integration-tests-secret-32-characters-minimum',
       ADMIN_EMAILS: 'admin.integration@example.com',
       EVENT_AI_DISABLED: '1',

@@ -1,9 +1,11 @@
 'use client'
 
-import Image from 'next/image'
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 import { useLanguage } from '@/contexts/LanguageContext'
 import { useSession } from '@/contexts/SessionContext'
+import { SHOW_EVENTS_NAV } from '@/lib/featureFlags'
+import LogoBrand from '@/components/LogoBrand'
 
 export default function Footer() {
   const { t, language } = useLanguage()
@@ -15,19 +17,13 @@ export default function Footer() {
     : 'Charitable Organization "Charity Fund PLUS PULSE"'
 
   return (
-    <footer className="footer">
+    <footer className="footer footer--redesign">
+      <div className="footer-bg" aria-hidden />
+      <div className="footer-overlay" aria-hidden />
       <div className="container">
         <div className="footer-content">
           <div className="footer-section">
-            <Link href="/" className="footer-brand">
-              <Image
-                src="/logo.png"
-                alt="PlusPulse — благодійна організація"
-                width={240}
-                height={72}
-                className="footer-logo"
-              />
-            </Link>
+            <LogoBrand variant="footer" className="footer-brand" />
             <p>{fullName}</p>
           </div>
           <div className="footer-section">
@@ -45,9 +41,11 @@ export default function Footer() {
               <li>
                 <Link href="/news">{t('nav.news')}</Link>
               </li>
-              <li>
-                <Link href="/events">{t('nav.events')}</Link>
-              </li>
+              {SHOW_EVENTS_NAV ? (
+                <li>
+                  <Link href="/events">{t('nav.events')}</Link>
+                </li>
+              ) : null}
               <li>
                 <Link href="/contacts">{t('nav.contact')}</Link>
               </li>
@@ -62,7 +60,18 @@ export default function Footer() {
           </div>
           <div className="footer-section">
             <h4>{t('footer.contact')}</h4>
-            <p>{t('about.locationValue')}</p>
+            <p className="footer-contact-item">
+              <span className="footer-contact-icon" aria-hidden>📍</span>
+              <span>{t('about.locationValue')}</span>
+            </p>
+            <p className="footer-contact-item">
+              <span className="footer-contact-icon" aria-hidden>✉️</span>
+              <a href={`mailto:${t('footer.email')}`}>{t('footer.email')}</a>
+            </p>
+            <p className="footer-contact-item">
+              <span className="footer-contact-icon" aria-hidden>📞</span>
+              <a href={`tel:${t('footer.phoneTel')}`}>{t('footer.phone')}</a>
+            </p>
           </div>
         </div>
         <div className="footer-bottom">

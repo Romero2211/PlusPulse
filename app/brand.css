@@ -1,0 +1,430 @@
+/* PlusPulse — глобальна дизайн-система (узгоджено з головною) */
+
+:root {
+    --brand-blue-mid: #1e4db7;
+    --section-bg: #f4f6fb;
+    --primary-color: #1a3d8f;
+    --primary-dark: #0f2557;
+    --bg-light: #f4f6fb;
+}
+
+/* Header на hero (головна) */
+.header.header-on-hero {
+    background: transparent;
+    backdrop-filter: none;
+    box-shadow: none;
+}
+
+.header.header-on-hero .nav-link {
+    color: rgba(255, 255, 255, 0.92);
+}
+
+.header.header-on-hero .nav-link:hover {
+    color: #fff;
+}
+
+.header.header-on-hero .nav-link::after {
+    background: var(--accent-yellow);
+}
+
+.header.header-on-hero .nav-link-donate {
+    background: var(--accent-yellow);
+    color: var(--brand-blue-dark) !important;
+    font-weight: 700;
+    border: none;
+}
+
+.header.header-on-hero .nav-link-donate:hover {
+    background: #ffe066;
+    color: var(--brand-blue-dark) !important;
+}
+
+.header.header-on-hero .nav-link-register,
+.header.header-on-hero .nav-link-cabinet {
+    color: #fff !important;
+    border-color: rgba(255, 255, 255, 0.55);
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.header.header-on-hero .nav-link-logout-btn,
+.header.header-on-hero .nav-user-icon {
+    color: #fff;
+    border-color: rgba(255, 255, 255, 0.45);
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.header.header-on-hero .language-switcher {
+    background: rgba(255, 255, 255, 0.12);
+    border-color: rgba(255, 255, 255, 0.25);
+}
+
+.header.header-on-hero .lang-btn {
+    color: rgba(255, 255, 255, 0.75);
+}
+
+.header.header-on-hero .lang-btn.active {
+    background: rgba(255, 255, 255, 0.22);
+    color: #fff;
+}
+
+.header.header-on-hero .hamburger span {
+    background: #fff;
+}
+
+.header.header-on-hero .logo-brand-text {
+    color: #fff;
+}
+
+.header.header-on-hero .logo-brand-icon {
+    filter: brightness(0) invert(1);
+}
+
+.nav-link:hover {
+    color: var(--brand-blue);
+}
+
+.nav-link::after {
+    background: var(--brand-blue);
+}
+
+.lang-btn.active {
+    background: var(--brand-blue);
+}
+
+.nav-user-icon:hover {
+    border-color: var(--brand-blue);
+    color: var(--brand-blue);
+}
+
+.logo-brand-text {
+    color: var(--brand-blue-dark);
+}
+
+/* Внутрішні сторінки — hero */
+.page-hero {
+    padding: 8.75rem 0 3.5rem;
+    background: linear-gradient(115deg, var(--brand-blue-dark) 0%, var(--brand-blue) 50%, var(--brand-blue-mid) 100%);
+    color: #fff;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.page-hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Cpath d='M40 62c-8-12-18-18-18-28a9 9 0 0 1 18 0c0 10-10 16-18 28z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    pointer-events: none;
+}
+
+.page-hero .container {
+    position: relative;
+    z-index: 1;
+}
+
+.page-hero-title {
+    font-size: clamp(1.75rem, 4vw, 2.35rem);
+    font-weight: 800;
+    margin-bottom: 0.75rem;
+    line-height: 1.2;
+}
+
+.page-hero-desc {
+    font-size: 1.05rem;
+    opacity: 0.92;
+    max-width: 620px;
+    margin: 0 auto;
+    line-height: 1.65;
+}
+
+main.page-below-header > section:first-child:not(.page-hero):not(.donate-page-hero) {
+    padding-top: 6.75rem;
+}
+
+main.page-below-header {
+    padding-bottom: 3rem;
+}
+
+.inner-page-body {
+    padding: 3rem 0 4rem;
+    background: var(--section-bg);
+}
+
+.inner-page-body--white {
+    background: #fff;
+}
+
+/* Секції — заголовки та фони */
+.section-divider {
+    background: linear-gradient(90deg, var(--brand-blue), var(--accent-yellow));
+}
+
+.section-title {
+    color: var(--brand-blue-dark);
+}
+
+.about,
+.programs-preview,
+.donate-fundraisers-section,
+.trust,
+.activities {
+    background: var(--section-bg);
+}
+
+.mvv,
+.news-preview,
+.mission,
+.audience,
+.transparency,
+.contact,
+.news-page {
+    background: #fff;
+}
+
+.about-card,
+.mvv-card,
+.trust-card,
+.activity-card,
+.transparency-card,
+.mission-card,
+.audience-card,
+.contact-card {
+    border-radius: 0.85rem;
+}
+
+.card-icon,
+.contact-icon {
+    background: linear-gradient(135deg, var(--brand-blue) 0%, var(--brand-blue-mid) 100%);
+}
+
+.about-card h3 {
+    color: var(--brand-blue);
+}
+
+.mvv-card:hover,
+.about-card:hover,
+.trust-card:hover {
+    border-color: rgba(26, 61, 143, 0.25);
+}
+
+.mvv-card-values {
+    border-left: 4px solid var(--accent-yellow);
+    border-top: none;
+}
+
+.mvv-pill {
+    background: rgba(26, 61, 143, 0.07);
+    border-color: rgba(26, 61, 143, 0.15);
+}
+
+.mission {
+    background: var(--section-bg);
+}
+
+.mission-card {
+    border-top-color: var(--brand-blue);
+}
+
+.trust-card {
+    border-top: 3px solid var(--brand-blue);
+}
+
+.activity-card:hover {
+    border-color: rgba(26, 61, 143, 0.25);
+}
+
+.audience-pill {
+    background: rgba(26, 61, 143, 0.08);
+    border-color: rgba(26, 61, 143, 0.18);
+    color: var(--brand-blue-dark);
+}
+
+/* Збори */
+.fundraiser-tag {
+    background: var(--accent-yellow);
+    border: none;
+    color: var(--brand-blue-dark);
+    font-weight: 800;
+}
+
+.fundraiser-progress-fill {
+    background: linear-gradient(90deg, var(--brand-blue), var(--brand-blue-mid));
+}
+
+/* Donate block */
+.donate {
+    background: var(--section-bg);
+    color: var(--text-primary);
+}
+
+.donate-text h2 {
+    color: var(--brand-blue-dark);
+}
+
+.donate-text p {
+    color: var(--text-secondary);
+    opacity: 1;
+}
+
+.donate-page-hero {
+    background: linear-gradient(115deg, var(--brand-blue-dark) 0%, var(--brand-blue) 50%, var(--brand-blue-mid) 100%);
+}
+
+/* Кнопки */
+.donate-btn,
+.register-form-submit,
+.contact-feedback-submit,
+.events-create-side-btn,
+.cabinet-form-submit,
+.programs-preview-actions .btn-primary,
+.trust-actions .btn-secondary {
+    background: var(--brand-blue);
+    color: #fff !important;
+    border: none;
+    border-radius: 0.65rem;
+    font-weight: 700;
+}
+
+.donate-btn:hover,
+.register-form-submit:hover:not(:disabled),
+.contact-feedback-submit:hover:not(:disabled),
+.events-create-side-btn:hover,
+.cabinet-form-submit:hover:not(:disabled),
+.programs-preview-actions .btn-primary:hover,
+.trust-actions .btn-secondary:hover {
+    background: var(--brand-blue-dark);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.programs-preview-actions .btn-primary {
+    background: var(--accent-yellow);
+    color: var(--brand-blue-dark) !important;
+}
+
+.programs-preview-actions .btn-primary:hover {
+    background: #ffe066;
+}
+
+.trust-actions .btn-secondary {
+    border: none;
+}
+
+.news-preview-actions .btn-primary,
+.news-page-actions .btn-primary {
+    background: var(--brand-blue);
+    color: #fff;
+    border: none;
+    border-radius: 0.65rem;
+    font-weight: 700;
+}
+
+/* Форми auth / cabinet */
+.register-form-card,
+.cabinet-form-card {
+    border-top: 4px solid var(--brand-blue);
+    border-radius: 1rem;
+    box-shadow: var(--shadow-md);
+}
+
+main.register-page,
+main.cabinet-page,
+main.events-page {
+    background: var(--section-bg);
+    padding-top: 0;
+    padding-bottom: 0;
+    min-height: auto;
+}
+
+.inner-page-body {
+    padding: 3rem 0 4rem;
+}
+
+.events-page-title {
+    color: var(--brand-blue-dark);
+    font-weight: 800;
+}
+
+.events-card-edit-btn,
+.events-card-map-link,
+.news-item-title {
+    color: var(--brand-blue);
+}
+
+/* Footer — скрізь як на головній */
+.footer.footer--redesign {
+    position: relative;
+    background: var(--brand-blue-dark);
+    color: #fff;
+    padding: 0;
+    overflow: hidden;
+}
+
+.footer--redesign .footer-bg {
+    position: absolute;
+    inset: 0;
+    background-image: url('/images/footer-bg.jpg');
+    background-size: cover;
+    background-position: center;
+    opacity: 0.18;
+}
+
+.footer--redesign .footer-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(15, 37, 87, 0.92) 0%, rgba(15, 37, 87, 0.98) 100%);
+}
+
+.footer--redesign .container {
+    position: relative;
+    z-index: 1;
+    padding-top: 3.5rem;
+    padding-bottom: 1.5rem;
+}
+
+.footer--redesign .footer-content {
+    grid-template-columns: 1.2fr 1fr 1fr;
+    gap: 2.5rem;
+    align-items: start;
+}
+
+.footer--redesign .footer-section h4 {
+    color: var(--accent-yellow);
+    font-weight: 700;
+    margin-bottom: 1.25rem;
+}
+
+.footer--redesign .footer-section p,
+.footer--redesign .footer-section ul li a {
+    color: rgba(255, 255, 255, 0.82);
+}
+
+.footer--redesign .footer-contact-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.65rem;
+    margin-bottom: 0.85rem;
+    color: rgba(255, 255, 255, 0.85);
+    line-height: 1.5;
+}
+
+.footer--redesign .footer-contact-item a {
+    color: rgba(255, 255, 255, 0.85);
+    text-decoration: none;
+}
+
+.footer--redesign .footer-contact-item a:hover {
+    color: var(--accent-yellow);
+}
+
+.footer--redesign .footer-bottom {
+    border-top-color: rgba(255, 255, 255, 0.12);
+    color: rgba(255, 255, 255, 0.55);
+}
+
+@media (max-width: 968px) {
+    .footer--redesign .footer-content {
+        grid-template-columns: 1fr;
+    }
+}

@@ -26,12 +26,14 @@ function formatNewsDate(iso: string, locale: 'uk' | 'en'): string {
 export default function NewsPostList({
   posts,
   locale,
+  variant = 'list',
 }: {
   posts: NewsPostListEntry[]
   locale: 'uk' | 'en'
+  variant?: 'list' | 'grid'
 }) {
   return (
-    <ul className="news-list">
+    <ul className={variant === 'grid' ? 'news-list news-list--grid' : 'news-list'}>
       {posts.map((p) => (
         <li key={p.id} className="news-item">
           <Link href={`/news/${p.slug}`} className="news-item-link">

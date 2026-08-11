@@ -11,6 +11,18 @@ export type AdminFundraiserFormState =
   | { success: true; id: string }
   | { success?: false; error?: 'unauth' | 'validation' | 'upload' | 'generic' }
 
+export type AdminFundraiserReportFormState =
+  | { success: true }
+  | { success?: false; error?: 'unauth' | 'validation' | 'not_found' | 'generic' }
+
+const reportSchema = z.object({
+  fundraiserId: z.string().trim().min(1),
+  occurredAt: z.string().trim().min(1),
+  description: z.string().trim().min(1).max(500),
+  amount: z.string().trim(),
+  isExpense: z.enum(['0', '1']).optional(),
+})
+
 const schema = z.object({
   title: z.string().trim().min(3).max(200),
   tag: z.string().trim().max(60).optional(),
@@ -30,6 +42,19 @@ function parseIntAmount(raw: string): number | null {
   const n = Number(cleaned)
   if (!Number.isFinite(n) || !Number.isInteger(n) || n < 0 || n > 2_000_000_000) return null
   return n
+}
+
+function parseReportDate(raw: string): Date | null {
+  const d = new Date(raw)
+  if (Number.isNaN(d.getTime())) return null
+  return d
+}
+
+function revalidateFundraiserPaths(fundraiserId: string) {
+  revalidatePath('/donate')
+  revalidatePath('/')
+  revalidatePath(`/donate/${fundraiserId}`)
+  revalidatePath(`/admin/fundraisers/${fundraiserId}/edit`)
 }
 
 export async function createFundraiserAction(
@@ -87,8 +112,7 @@ export async function createFundraiserAction(
       },
       select: { id: true },
     })
-    revalidatePath('/donate')
-    revalidatePath('/')
+    revalidateFundraiserPaths(row.id)
     return { success: true, id: row.id }
   } catch {
     return { error: 'generic' }
@@ -159,8 +183,7 @@ export async function updateFundraiserAction(
         authorId: session.id,
       },
     })
-    revalidatePath('/donate')
-    revalidatePath('/')
+    revalidateFundraiserPaths(id)
     return { success: true, id }
   } catch {
     return { error: 'generic' }
@@ -170,4 +193,80 @@ export async function updateFundraiserAction(
 export async function goToFundraisersListAction(): Promise<void> {
   await requireAdmin()
   redirect('/admin/fundraisers')
+}
+
+export async function addFundraiserReportAction(
+  _prev: AdminFundraiserReportFormState,
+  formData: FormData,
+): Promise<AdminFundraiserReportFormState> {
+  try {
+    await requireAdmin()
+  } catch {
+    return { error: 'unauth' }
+  }
+
+  const parsed = reportSchema.safeParse({
+    fundraiserId: formData.get('fundraiserId'),
+    occurredAt: formData.get('occurredAt'),
+    description: formData.get('description'),
+    amount: formData.get('amount'),
+    isExpense: formData.get('isExpense'),
+  })
+  if (!parsed.success) return { error: 'validation' }
+
+  const occurredAt = parseReportDate(parsed.data.occurredAt)
+  const amountAbs = parseIntAmount(parsed.data.amount)
+  if (!occurredAt || amountAbs === null || amountAbs <= 0) return { error: 'validation' }
+
+  const amount = parsed.data.isExpense === '1' ? -amountAbs : amountAbs
+
+  const fundraiser = await prisma.fundraiser.findUnique({
+    where: { id: parsed.data.fundraiserId },
+    select: { id: true },
+  })
+  if (!fundraiser) return { error: 'not_found' }
+
+  try {
+    await prisma.fundraiserReport.create({
+      data: {
+        fundraiserId: fundraiser.id,
+        occurredAt,
+        description: parsed.data.description,
+        amount,
+      },
+    })
+    revalidateFundraiserPaths(fundraiser.id)
+    return { success: true }
+  } catch {
+    return { error: 'generic' }
+  }
+}
+
+export async function deleteFundraiserReportAction(
+  _prev: AdminFundraiserReportFormState,
+  formData: FormData,
+): Promise<AdminFundraiserReportFormState> {
+  try {
+    await requireAdmin()
+  } catch {
+    return { error: 'unauth' }
+  }
+
+  const reportId = typeof formData.get('reportId') === 'string' ? formData.get('reportId') as string : ''
+  const fundraiserId = typeof formData.get('fundraiserId') === 'string' ? formData.get('fundraiserId') as string : ''
+  if (!reportId.trim() || !fundraiserId.trim()) return { error: 'validation' }
+
+  const report = await prisma.fundraiserReport.findFirst({
+    where: { id: reportId, fundraiserId },
+    select: { id: true, fundraiserId: true },
+  })
+  if (!report) return { error: 'not_found' }
+
+  try {
+    await prisma.fundraiserReport.delete({ where: { id: report.id } })
+    revalidateFundraiserPaths(report.fundraiserId)
+    return { success: true }
+  } catch {
+    return { error: 'generic' }
+  }
 }

@@ -1,0 +1,408 @@
+/* Сторінка окремого збору */
+
+.fundraiser-detail-page {
+    background: #f4f6fb;
+    padding-bottom: 4rem;
+}
+
+.fundraiser-detail {
+    padding: 1.5rem 0 0;
+}
+
+.fundraiser-breadcrumbs {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.45rem;
+    font-size: 0.9rem;
+    margin-bottom: 1.75rem;
+    color: var(--text-secondary);
+}
+
+.fundraiser-breadcrumbs a {
+    color: var(--brand-blue);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.fundraiser-breadcrumbs a:hover {
+    text-decoration: underline;
+}
+
+.fundraiser-breadcrumbs-current {
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+.card-panel {
+    background: #fff;
+    border: 1px solid var(--border-color);
+    border-radius: 1rem;
+    box-shadow: var(--shadow-sm);
+    padding: 1.75rem;
+}
+
+.fundraiser-detail-hero {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    align-items: start;
+    margin-bottom: 1.5rem;
+}
+
+.fundraiser-detail-cover-wrap {
+    position: relative;
+    border-radius: 1rem;
+    overflow: hidden;
+    background: var(--bg-light);
+    min-height: 320px;
+}
+
+.fundraiser-detail-cover {
+    width: 100%;
+    height: 100%;
+    min-height: 320px;
+    object-fit: cover;
+    display: block;
+}
+
+.fundraiser-detail-cover--placeholder {
+    background: linear-gradient(135deg, #dbeafe 0%, #e2e8f0 100%);
+}
+
+.fundraiser-detail-tag {
+    position: absolute;
+    top: 14px;
+    left: 14px;
+    z-index: 2;
+    padding: 0.35rem 0.75rem;
+    border-radius: 999px;
+    font-size: 0.8rem;
+    font-weight: 800;
+    background: var(--brand-blue);
+    color: #fff;
+}
+
+.fundraiser-detail-title {
+    font-size: clamp(1.65rem, 3vw, 2.25rem);
+    font-weight: 800;
+    color: var(--brand-blue-dark);
+    line-height: 1.2;
+    margin-bottom: 0.85rem;
+}
+
+.fundraiser-detail-lead {
+    color: var(--text-secondary);
+    line-height: 1.65;
+    margin-bottom: 1.5rem;
+}
+
+.fundraiser-detail-collected-label {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    margin-bottom: 0.35rem;
+}
+
+.fundraiser-detail-amount-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.75rem 1.25rem;
+    margin-bottom: 0.85rem;
+}
+
+.fundraiser-detail-raised {
+    font-size: clamp(1.75rem, 3vw, 2.35rem);
+    font-weight: 800;
+    color: var(--brand-blue-dark);
+}
+
+.fundraiser-detail-goal {
+    color: var(--text-secondary);
+    font-weight: 600;
+}
+
+.fundraiser-detail-progress {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    margin-bottom: 1.5rem;
+}
+
+.fundraiser-detail-progress-bar {
+    flex: 1;
+    height: 10px;
+    border-radius: 999px;
+    background: #e5e7eb;
+    overflow: hidden;
+}
+
+.fundraiser-detail-progress-fill {
+    height: 100%;
+    border-radius: 999px;
+    background: linear-gradient(90deg, #22c55e, #16a34a);
+}
+
+.fundraiser-detail-progress-pct {
+    font-weight: 800;
+    color: var(--brand-blue-dark);
+    min-width: 2.5rem;
+    text-align: right;
+}
+
+.fundraiser-detail-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.85rem;
+}
+
+.fundraiser-detail-donate-btn {
+    flex: 1 1 180px;
+    background: var(--brand-blue);
+    color: #fff;
+    border: none;
+    border-radius: 0.65rem;
+    padding: 0.95rem 1.5rem;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.fundraiser-detail-donate-btn:hover {
+    background: var(--brand-blue-dark);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.fundraiser-detail-share-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    background: #fff;
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+    border-radius: 0.65rem;
+    padding: 0.95rem 1.25rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.fundraiser-detail-share-btn:hover {
+    border-color: var(--brand-blue);
+    color: var(--brand-blue);
+}
+
+.fundraiser-detail-share-hint {
+    margin-top: 0.65rem;
+    font-size: 0.88rem;
+    color: var(--secondary-color);
+    font-weight: 600;
+}
+
+.fundraiser-detail-about {
+    margin-bottom: 1.5rem;
+}
+
+.fundraiser-detail-section-title {
+    font-size: 1.35rem;
+    font-weight: 800;
+    color: var(--brand-blue-dark);
+    margin-bottom: 0.85rem;
+}
+
+.fundraiser-detail-about-text {
+    color: var(--text-secondary);
+    line-height: 1.65;
+    margin-bottom: 1.5rem;
+}
+
+.fundraiser-detail-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+    margin: 0 0 1.75rem;
+}
+
+.fundraiser-detail-stats div {
+    min-width: 0;
+}
+
+.fundraiser-detail-stats dt {
+    font-size: 0.82rem;
+    color: var(--text-secondary);
+    margin-bottom: 0.35rem;
+}
+
+.fundraiser-detail-stats dd {
+    font-size: 1.05rem;
+    font-weight: 800;
+    color: var(--brand-blue-dark);
+    margin: 0;
+}
+
+.fundraiser-detail-reporting-title {
+    font-size: 1.05rem;
+    font-weight: 800;
+    color: var(--brand-blue);
+    margin: 0 0 1rem;
+    padding-bottom: 0.65rem;
+    border-bottom: 2px solid var(--brand-blue);
+    display: inline-block;
+}
+
+.fundraiser-detail-reports {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.fundraiser-detail-report-row {
+    display: grid;
+    grid-template-columns: 110px 1fr auto;
+    gap: 1rem;
+    align-items: center;
+    padding: 0.85rem 0;
+    border-bottom: 1px solid var(--border-color);
+    font-size: 0.95rem;
+}
+
+.fundraiser-detail-report-date {
+    color: var(--text-secondary);
+}
+
+.fundraiser-detail-report-desc {
+    color: var(--text-primary);
+}
+
+.fundraiser-detail-report-amount {
+    font-weight: 800;
+    color: var(--brand-blue-dark);
+    white-space: nowrap;
+}
+
+.fundraiser-detail-reports-empty {
+    color: var(--text-secondary);
+    padding: 0.5rem 0 1rem;
+}
+
+.fundraiser-detail-reports-more {
+    display: flex;
+    justify-content: center;
+    margin-top: 1.25rem;
+}
+
+.fundraiser-detail-show-more {
+    background: #fff;
+    color: var(--brand-blue);
+    border: 1px solid var(--border-color);
+    border-radius: 999px;
+    padding: 0.75rem 1.75rem;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.fundraiser-detail-show-more:hover {
+    border-color: var(--brand-blue);
+    background: #f8fafc;
+}
+
+/* Як допомогти */
+.fundraiser-help {
+    margin-bottom: 1rem;
+}
+
+.fundraiser-help-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.fundraiser-help-card {
+    border: 1px solid var(--border-color);
+    border-radius: 0.85rem;
+    padding: 1.25rem;
+    background: #fafbfc;
+}
+
+.fundraiser-help-icon {
+    display: inline-flex;
+    width: 44px;
+    height: 44px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0.65rem;
+    font-size: 1.35rem;
+    margin-bottom: 0.75rem;
+}
+
+.fundraiser-help-card--blue .fundraiser-help-icon {
+    background: rgba(37, 99, 235, 0.12);
+}
+
+.fundraiser-help-card--orange .fundraiser-help-icon {
+    background: rgba(245, 158, 11, 0.15);
+}
+
+.fundraiser-help-card--green .fundraiser-help-icon {
+    background: rgba(34, 197, 94, 0.12);
+}
+
+.fundraiser-help-card h3 {
+    font-size: 1.05rem;
+    font-weight: 800;
+    margin-bottom: 0.35rem;
+    color: var(--brand-blue-dark);
+}
+
+.fundraiser-help-card p {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    line-height: 1.5;
+    margin: 0;
+}
+
+.fundraiser-help-note {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    line-height: 1.55;
+    margin: 0;
+}
+
+@media (max-width: 968px) {
+    .fundraiser-detail-hero {
+        grid-template-columns: 1fr;
+    }
+
+    .fundraiser-detail-stats {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .fundraiser-help-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .fundraiser-detail-report-row {
+        grid-template-columns: 1fr;
+        gap: 0.35rem;
+    }
+
+    .fundraiser-detail-report-amount {
+        justify-self: start;
+    }
+}
+
+@media (max-width: 480px) {
+    .fundraiser-detail-stats {
+        grid-template-columns: 1fr;
+    }
+
+    .fundraiser-detail-actions {
+        flex-direction: column;
+    }
+
+    .fundraiser-detail-donate-btn,
+    .fundraiser-detail-share-btn {
+        width: 100%;
+    }
+}

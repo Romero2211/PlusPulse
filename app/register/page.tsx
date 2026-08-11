@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import Header from '@/components/Header'
+import PageHero from '@/components/PageHero'
 import Footer from '@/components/Footer'
 import RegisterForm from '@/components/RegisterForm'
 
@@ -13,7 +14,8 @@ export default function RegisterPage() {
     <>
       <Header />
       <main className="page-below-header register-page">
-        <div className="container">
+        <PageHero title="Реєстрація" description="Створіть обліковий запис для участі у заходах фонду." />
+        <div className="container inner-page-body">
           <RegisterForm />
         </div>
       </main>

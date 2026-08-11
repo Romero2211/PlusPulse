@@ -1,4 +1,5 @@
 import Header from '@/components/Header'
+import PageHero from '@/components/PageHero'
 import DonateFundraisersSection from '@/components/DonateFundraisersSection'
 import Transparency from '@/components/Transparency'
 import Donate from '@/components/Donate'
@@ -16,14 +17,10 @@ export default function DonatePage() {
     <>
       <Header />
       <main className="donate-page page-below-header">
-        <section className="donate-page-hero" aria-label="Допомогти фонду">
-          <div className="container">
-            <h1 className="donate-page-hero-title">Допомогти фонду</h1>
-            <p className="donate-page-hero-desc">
-              Ознайомтесь з нашими програмами, звітністю та способами підтримки.
-            </p>
-          </div>
-        </section>
+        <PageHero
+          title="Допомогти фонду"
+          description="Ознайомтесь з нашими програмами, звітністю та способами підтримки."
+        />
         <DonateFundraisersSection />
         <Transparency />
         <Donate />

@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { redirect } from 'next/navigation'
 import Header from '@/components/Header'
+import PageHero from '@/components/PageHero'
 import Footer from '@/components/Footer'
 import CabinetForm from '@/components/CabinetForm'
 import { getSession } from '@/lib/session'
@@ -42,7 +43,8 @@ export default async function CabinetPage() {
     <>
       <Header />
       <main className="page-below-header cabinet-page">
-        <div className="container">
+        <PageHero title="Особистий кабінет" description="Профіль волонтера та статистика участі в заходах." />
+        <div className="container inner-page-body">
           <CabinetForm
             initial={{
               ...user,

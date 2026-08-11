@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
+import PageHero from '@/components/PageHero'
 import EventsView, { type EventListItem } from '@/components/EventsView'
 import { getSession } from '@/lib/session'
 import { prisma } from '@/lib/prisma'
@@ -66,8 +67,12 @@ export default async function EventsPage() {
     <>
       <Header />
       <main className="page-below-header events-page">
-        <div className="container">
-          <EventsView events={events} isLoggedIn={!!session} />
+        <PageHero
+          title="Волонтерські заходи"
+          description="Приєднуйтесь до заходів фонду або організуйте власну ініціативу."
+        />
+        <div className="container inner-page-body">
+          <EventsView events={events} isLoggedIn={!!session} hidePageHeader />
         </div>
       </main>
       <Footer />

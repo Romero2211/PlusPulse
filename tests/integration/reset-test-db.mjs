@@ -1,13 +1,22 @@
-import { rm } from 'fs/promises'
+import { execSync } from 'child_process'
 import path from 'path'
 import { fileURLToPath } from 'url'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const root = path.join(__dirname, '..', '..')
 
-for (const file of ['integration-test.db', 'integration-test.db-journal']) {
-  const abs = path.join(root, 'prisma', file)
-  await rm(abs, { force: true })
-}
+const databaseUrl =
+  process.env.TEST_DATABASE_URL ||
+  'postgresql://pluspulse:pluspulse@127.0.0.1:5433/pluspulse?schema=public'
 
-console.log('Integration test DB reset.')
+execSync('npx prisma migrate reset --force', {
+  cwd: root,
+  stdio: 'inherit',
+  env: {
+    ...process.env,
+    DATABASE_URL: databaseUrl,
+    DIRECT_DATABASE_URL: databaseUrl,
+  },
+})
+
+console.log('Integration test DB reset (PostgreSQL).')

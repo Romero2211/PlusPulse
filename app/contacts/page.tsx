@@ -1,4 +1,5 @@
 import Header from '@/components/Header'
+import PageHero from '@/components/PageHero'
 import Contact from '@/components/Contact'
 import Footer from '@/components/Footer'
 
@@ -12,6 +13,10 @@ export default function ContactsPage() {
     <>
       <Header />
       <main className="page-below-header">
+        <PageHero
+          title="Контакти"
+          description="Зв’яжіться з нами або надішліть побажання та зворотний зв’язок."
+        />
         <Contact showFeedbackForm />
       </main>
       <Footer />

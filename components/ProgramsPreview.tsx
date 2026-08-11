@@ -17,7 +17,7 @@ export default function ProgramsPreview({ fundraiserRows }: { fundraiserRows: Fu
         </div>
 
         <div className="programs-preview-fundraisers">
-          <FundraiserActiveCards rows={fundraiserRows} emptyMessage={t('programsPreview.emptyFundraisers')} />
+          <FundraiserActiveCards rows={fundraiserRows.slice(0, 3)} emptyMessage={t('programsPreview.emptyFundraisers')} />
         </div>
 
         <div className="programs-preview-actions">

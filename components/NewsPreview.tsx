@@ -22,7 +22,7 @@ export default function NewsPreview({ posts }: { posts: NewsPreviewPost[] }) {
         {posts.length === 0 ? (
           <p className="events-empty">{t('newsPreview.empty')}</p>
         ) : (
-          <NewsPostList posts={posts} locale={locale} />
+          <NewsPostList posts={posts} locale={locale} variant="grid" />
         )}
 
         <div className="news-preview-actions">

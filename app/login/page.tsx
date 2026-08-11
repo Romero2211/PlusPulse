@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import Header from '@/components/Header'
+import PageHero from '@/components/PageHero'
 import Footer from '@/components/Footer'
 import LoginForm from '@/components/LoginForm'
 
@@ -13,7 +14,8 @@ export default function LoginPage() {
     <>
       <Header />
       <main className="page-below-header register-page">
-        <div className="container">
+        <PageHero title="Вхід" description="Увійдіть до облікового запису PlusPulse." />
+        <div className="container inner-page-body">
           <LoginForm />
         </div>
       </main>

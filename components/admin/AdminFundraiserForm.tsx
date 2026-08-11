@@ -37,8 +37,14 @@ export default function AdminFundraiserForm(props:
 
   useEffect(() => {
     if (!state || !('success' in state) || !state.success) return
-    router.push('/admin/fundraisers')
-  }, [state, router])
+    if (props.mode === 'create') {
+      router.push(`/admin/fundraisers/${state.id}/edit`)
+      return
+    }
+  }, [state, router, props.mode])
+
+  const savedNotice =
+    props.mode === 'edit' && state && 'success' in state && state.success ? t('admin.saved') : null
 
   const errorText =
     state && 'error' in state
@@ -61,6 +67,7 @@ export default function AdminFundraiserForm(props:
       </div>
 
       {errorText ? <p className="admin-alert" role="alert">{errorText}</p> : null}
+      {savedNotice ? <p className="admin-success" role="status">{savedNotice}</p> : null}
 
       <form action={formAction} className="admin-form">
         {props.mode === 'edit' ? <input type="hidden" name="id" value={props.initial.id} /> : null}

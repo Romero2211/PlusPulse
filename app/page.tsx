@@ -8,6 +8,7 @@ import TrustBlock from '@/components/TrustBlock'
 import Contact from '@/components/Contact'
 import Footer from '@/components/Footer'
 import { prisma } from '@/lib/prisma'
+import './home.css'
 
 export const dynamic = 'force-dynamic'
 
@@ -53,7 +54,7 @@ export default async function Home() {
   return (
     <>
       <Header />
-      <main>
+      <main className="home-page">
         <Hero />
         <About />
         <MVV />

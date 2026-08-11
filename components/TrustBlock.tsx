@@ -32,7 +32,7 @@ export default function TrustBlock() {
         </div>
 
         <div className="trust-actions">
-          <Link className="btn btn-secondary" href="/transparency">
+          <Link className="btn btn-secondary" href="/donate#transparency">
             {t('trust.cta')}
           </Link>
         </div>

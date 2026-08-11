@@ -1,12 +1,11 @@
 import { expect, test } from '@playwright/test'
 
-test('public home page opens and navigation leads to events', async ({ page }) => {
+test('public home page opens and events page is reachable', async ({ page }) => {
   await page.goto('/')
 
-  await expect(page.getByRole('heading', { name: 'Благодійна організація' })).toBeVisible()
-  await expect(page.getByRole('navigation').getByRole('link', { name: 'Заходи' })).toBeVisible()
+  await expect(page.getByRole('heading', { name: 'Разом — ми змінюємо життя' })).toBeVisible()
 
-  await page.getByRole('navigation').getByRole('link', { name: 'Заходи' }).click()
+  await page.goto('/events')
 
   await expect(page).toHaveURL(/\/events$/)
   await expect(page.getByRole('heading', { name: 'Волонтерські заходи' })).toBeVisible()

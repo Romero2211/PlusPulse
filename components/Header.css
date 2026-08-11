@@ -1,3 +1,111 @@
 .header.scrolled {
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
 }
+
+.nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    flex-shrink: 0;
+    flex-wrap: nowrap;
+}
+
+.nav-user-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    border: 1px solid var(--border-color);
+    border-radius: 0.5rem;
+    background: var(--bg-light);
+    color: var(--text-primary);
+    text-decoration: none;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: var(--transition);
+}
+
+.nav-user-cluster {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-shrink: 0;
+}
+
+.nav-logout-form--desktop {
+    display: flex;
+    margin: 0;
+}
+
+.nav-logout-btn {
+    padding: 0.45rem 0.85rem;
+    border-radius: 0.5rem;
+    border: 1px solid var(--border-color);
+    background: var(--bg-light);
+    color: var(--text-primary);
+    font: inherit;
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+    white-space: nowrap;
+}
+
+.nav-logout-btn:hover {
+    border-color: var(--text-secondary);
+    background: #fff;
+    color: var(--text-primary);
+}
+
+.nav-menu-mobile-only {
+    display: none;
+}
+
+.nav-donate-desktop {
+    margin-left: 0;
+}
+
+@media (max-width: 1024px) {
+    .nav-menu-mobile-only {
+        display: list-item;
+    }
+
+    .nav-donate-desktop {
+        display: none;
+    }
+
+    .nav-logout-form--desktop {
+        display: none;
+    }
+
+    .nav-actions {
+        margin-left: auto;
+    }
+}
+
+@media (min-width: 1025px) and (max-width: 1200px) {
+    .nav-actions {
+        gap: 0.5rem;
+    }
+
+    .nav-actions .language-switcher {
+        padding: 0.2rem;
+    }
+
+    .nav-actions .lang-btn {
+        padding: 0.4rem 0.65rem;
+        font-size: 0.875rem;
+    }
+
+    .nav-link-donate.nav-donate-desktop {
+        padding: 0.45rem 1rem;
+        font-size: 0.9rem;
+    }
+
+    .nav-logout-btn {
+        padding: 0.4rem 0.65rem;
+        font-size: 0.8125rem;
+    }
+}

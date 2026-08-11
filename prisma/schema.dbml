@@ -1,0 +1,173 @@
+// ER-модель бази даних вебпорталу PlusPulse
+// Джерело: prisma/schema.prisma
+// Візуалізація: https://dbdiagram.io — New diagram → Import → Paste DBML
+
+Project PlusPulse {
+  database_type: 'PostgreSQL'
+  Note: '''
+    Благодійний вебпортал «ПЛЮС ПУЛЬС».
+    ORM: Prisma. Production: PostgreSQL (Neon / Vercel Postgres).
+  '''
+}
+
+Table User {
+  id varchar [pk, note: 'cuid()']
+  email varchar [unique, not null]
+  name varchar
+  passwordHash varchar [not null]
+  bio varchar
+  phone varchar
+  city varchar
+  avatarUrl varchar
+  createdAt datetime [not null, default: `now()`]
+  updatedAt datetime [not null]
+
+  Note: 'Користувач / волонтер; пароль — bcrypt-хеш'
+}
+
+Table Event {
+  id varchar [pk, note: 'cuid()']
+  title varchar [not null]
+  description varchar
+  reason varchar
+  startsAt datetime [not null]
+  archivedAt datetime
+  location varchar [not null]
+  district varchar [note: 'Ключ району Києва']
+  latitude float [note: 'WGS84']
+  longitude float [note: 'WGS84']
+  maxParticipants integer
+  hostId varchar [not null]
+  createdAt datetime [not null, default: `now()`]
+  updatedAt datetime [not null]
+
+  Note: 'Волонтерський захід'
+}
+
+Table EventParticipant {
+  id varchar [pk, note: 'cuid()']
+  eventId varchar [not null]
+  userId varchar [not null]
+  createdAt datetime [not null, default: `now()`]
+
+  indexes {
+    (eventId, userId) [unique]
+  }
+
+  Note: 'Участь користувача в заході (M:N User ↔ Event)'
+}
+
+Table EventMessage {
+  id varchar [pk, note: 'cuid()']
+  body varchar [not null]
+  eventId varchar [not null]
+  userId varchar [not null]
+  createdAt datetime [not null, default: `now()`]
+
+  indexes {
+    (eventId, createdAt)
+  }
+
+  Note: 'Чат учасників заходу'
+}
+
+Table EventPendingApproval {
+  id varchar [pk, note: 'cuid()']
+  kind varchar [not null, note: 'create | edit']
+  targetEventId varchar [note: 'id Event при kind=edit']
+  title varchar [not null]
+  description varchar
+  reason varchar
+  startsAt datetime [not null]
+  location varchar [not null]
+  latitude float
+  longitude float
+  maxParticipants integer
+  district varchar
+  hostId varchar [not null]
+  source varchar [not null, note: 'ambiguous | service_error']
+  serviceErrorReason varchar
+  createdAt datetime [not null, default: `now()`]
+
+  indexes {
+    hostId
+    createdAt
+  }
+
+  Note: 'Черга модерації після AI-перевірки'
+}
+
+Table NewsPost {
+  id varchar [pk, note: 'cuid()']
+  title varchar [not null]
+  slug varchar [unique, not null]
+  excerpt varchar
+  body varchar [not null]
+  coverImageUrl varchar
+  gallery json
+  publishedAt datetime
+  authorId varchar [not null]
+  createdAt datetime [not null, default: `now()`]
+  updatedAt datetime [not null]
+
+  indexes {
+    publishedAt
+  }
+
+  Note: 'Новина фонду'
+}
+
+Table Fundraiser {
+  id varchar [pk, note: 'cuid()']
+  title varchar [not null]
+  tag varchar
+  description varchar [not null]
+  goalAmount integer [not null]
+  raisedAmount integer [not null, default: 0]
+  coverImageUrl varchar
+  gallery json
+  publishedAt datetime
+  archivedAt datetime
+  authorId varchar [not null]
+  createdAt datetime [not null, default: `now()`]
+  updatedAt datetime [not null]
+
+  indexes {
+    publishedAt
+    archivedAt
+  }
+
+  Note: 'Збір коштів'
+}
+
+Table ContactFeedback {
+  id varchar [pk, note: 'cuid()']
+  name varchar
+  email varchar
+  message varchar [not null]
+  createdAt datetime [not null, default: `now()`]
+
+  indexes {
+    createdAt
+  }
+
+  Note: 'Зворотний звʼязок (без FK на User)'
+}
+
+// Звʼязки (onDelete: Cascade у Prisma)
+Ref: Event.hostId > User.id [delete: cascade]
+
+Ref: EventParticipant.eventId > Event.id [delete: cascade]
+Ref: EventParticipant.userId > User.id [delete: cascade]
+
+Ref: EventMessage.eventId > Event.id [delete: cascade]
+Ref: EventMessage.userId > User.id [delete: cascade]
+
+Ref: EventPendingApproval.hostId > User.id [delete: cascade]
+
+Ref: NewsPost.authorId > User.id [delete: cascade]
+
+Ref: Fundraiser.authorId > User.id [delete: cascade]
+
+// Логічний звʼязок (у Prisma без formal FK)
+Ref: EventPendingApproval.targetEventId > Event.id
