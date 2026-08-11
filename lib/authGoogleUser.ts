@@ -20,8 +20,8 @@ export async function findOrCreateUserFromGoogle(profile: GoogleUserProfile) {
       where: { id: byEmail.id },
       data: {
         googleId: byEmail.googleId ?? profile.sub,
-        name: byEmail.name ?? profile.name?.trim() || null,
-        avatarUrl: byEmail.avatarUrl ?? profile.picture?.trim() || null,
+        name: byEmail.name ?? (profile.name?.trim() || null),
+        avatarUrl: byEmail.avatarUrl ?? (profile.picture?.trim() || null),
       },
       select: { id: true, email: true },
     })
