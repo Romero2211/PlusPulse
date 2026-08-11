@@ -29,8 +29,22 @@ const schema = z.object({
   description: z.string().trim().min(1).max(10_000),
   goalAmount: z.string().trim(),
   raisedAmount: z.string().trim().optional(),
+  monobankUrl: z.string().trim().max(500).optional(),
   removeCover: z.enum(['0', '1']).optional(),
 })
+
+function parseMonobankUrl(raw: unknown): string | null {
+  const s = typeof raw === 'string' ? raw.trim() : ''
+  if (!s) return null
+  try {
+    const u = new URL(s)
+    if (u.protocol !== 'https:') return null
+    if (!u.hostname.endsWith('monobank.ua')) return null
+    return u.toString()
+  } catch {
+    return null
+  }
+}
 
 function isCheckboxChecked(formData: FormData, name: string): boolean {
   return formData.getAll(name).includes('1')
@@ -74,6 +88,7 @@ export async function createFundraiserAction(
     description: formData.get('description'),
     goalAmount: formData.get('goalAmount'),
     raisedAmount: formData.get('raisedAmount'),
+    monobankUrl: formData.get('monobankUrl'),
   })
   if (!parsed.success) return { error: 'validation' }
 
@@ -81,6 +96,10 @@ export async function createFundraiserAction(
   const raised = parsed.data.raisedAmount ? parseIntAmount(parsed.data.raisedAmount) : 0
   if (goal === null || goal <= 0) return { error: 'validation' }
   if (raised === null) return { error: 'validation' }
+
+  const monobankRaw = typeof formData.get('monobankUrl') === 'string' ? String(formData.get('monobankUrl')).trim() : ''
+  const monobankUrl = monobankRaw ? parseMonobankUrl(monobankRaw) : null
+  if (monobankRaw && !monobankUrl) return { error: 'validation' }
 
   const cover = formData.get('cover')
   const coverFile = cover instanceof File && cover.size > 0 ? cover : null
@@ -104,6 +123,7 @@ export async function createFundraiserAction(
         description: parsed.data.description,
         goalAmount: goal,
         raisedAmount: raised,
+        monobankUrl,
         coverImageUrl,
         gallery: [],
         publishedAt,
@@ -139,6 +159,7 @@ export async function updateFundraiserAction(
     description: formData.get('description'),
     goalAmount: formData.get('goalAmount'),
     raisedAmount: formData.get('raisedAmount'),
+    monobankUrl: formData.get('monobankUrl'),
     removeCover: formData.get('removeCover'),
   })
   if (!parsed.success) return { error: 'validation' }
@@ -147,6 +168,10 @@ export async function updateFundraiserAction(
   const raised = parsed.data.raisedAmount ? parseIntAmount(parsed.data.raisedAmount) : 0
   if (goal === null || goal <= 0) return { error: 'validation' }
   if (raised === null) return { error: 'validation' }
+
+  const monobankRaw = typeof formData.get('monobankUrl') === 'string' ? String(formData.get('monobankUrl')).trim() : ''
+  const monobankUrl = monobankRaw ? parseMonobankUrl(monobankRaw) : null
+  if (monobankRaw && !monobankUrl) return { error: 'validation' }
 
   const cover = formData.get('cover')
   const coverFile = cover instanceof File && cover.size > 0 ? cover : null
@@ -171,6 +196,7 @@ export async function updateFundraiserAction(
         description: parsed.data.description,
         goalAmount: goal,
         raisedAmount: raised,
+        monobankUrl,
         coverImageUrl:
           parsed.data.removeCover === '1'
             ? null

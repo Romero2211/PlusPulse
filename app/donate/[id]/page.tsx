@@ -37,6 +37,7 @@ export default async function FundraiserDetailPage(props: Props) {
       raisedAmount: true,
       coverImageUrl: true,
       endsAt: true,
+      monobankUrl: true,
       reports: {
         orderBy: { occurredAt: 'desc' },
         select: {
@@ -60,6 +61,7 @@ export default async function FundraiserDetailPage(props: Props) {
     raisedAmount: row.raisedAmount,
     coverImageUrl: row.coverImageUrl,
     endsAtIso: row.endsAt?.toISOString() ?? null,
+    monobankUrl: row.monobankUrl,
   }
 
   const reports = row.reports.map((r) => ({

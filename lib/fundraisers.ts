@@ -26,6 +26,7 @@ export type FundraiserPublicRow = {
   raisedAmount: number
   coverImageUrl: string | null
   endsAtIso?: string | null
+  monobankUrl?: string | null
 }
 
 export type FundraiserReportRow = {

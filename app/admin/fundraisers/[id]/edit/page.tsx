@@ -28,6 +28,7 @@ export default async function AdminFundraisersEditPage(props: Props) {
       goalAmount: true,
       raisedAmount: true,
       coverImageUrl: true,
+      monobankUrl: true,
       publishedAt: true,
       archivedAt: true,
       reports: {
@@ -58,6 +59,7 @@ export default async function AdminFundraisersEditPage(props: Props) {
               goalAmount: row.goalAmount,
               raisedAmount: row.raisedAmount,
               coverImageUrl: row.coverImageUrl,
+              monobankUrl: row.monobankUrl,
               published: !!row.publishedAt,
               archived: !!row.archivedAt,
             }}

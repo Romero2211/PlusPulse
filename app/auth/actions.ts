@@ -7,7 +7,7 @@ import { prisma } from '@/lib/prisma'
 import { createSession, destroySession } from '@/lib/session'
 
 export type LoginFormState = {
-  errorKey?: 'invalid' | 'email' | 'generic'
+  errorKey?: 'invalid' | 'email' | 'oauth' | 'generic'
 }
 
 const loginSchema = z.object({
@@ -39,13 +39,20 @@ export async function loginAction(
 
   let user
   try {
-    user = await prisma.user.findUnique({ where: { email } })
+    user = await prisma.user.findUnique({
+      where: { email },
+      select: { id: true, email: true, passwordHash: true },
+    })
   } catch {
     return { errorKey: 'generic' }
   }
 
   if (!user) {
     return { errorKey: 'invalid' }
+  }
+
+  if (!user.passwordHash) {
+    return { errorKey: 'oauth' }
   }
 
   let passwordOk: boolean

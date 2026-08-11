@@ -69,6 +69,8 @@ export default function FundraiserDetailView({
     document.getElementById('fundraiser-help')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }
 
+  const monobankUrl = fundraiser.monobankUrl?.trim() || null
+
   return (
     <div className="fundraiser-detail">
       <nav className="fundraiser-breadcrumbs" aria-label={t('fundraiserDetail.breadcrumbAria')}>
@@ -112,9 +114,20 @@ export default function FundraiserDetailView({
           </div>
 
           <div className="fundraiser-detail-actions">
-            <button type="button" className="btn fundraiser-detail-donate-btn" onClick={scrollToHelp}>
-              {t('fundraiserDetail.donateNow')}
-            </button>
+            {monobankUrl ? (
+              <a
+                href={monobankUrl}
+                className="btn fundraiser-detail-donate-btn"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {t('fundraiserDetail.monobankDonate')}
+              </a>
+            ) : (
+              <button type="button" className="btn fundraiser-detail-donate-btn" onClick={scrollToHelp}>
+                {t('fundraiserDetail.donateNow')}
+              </button>
+            )}
             <button type="button" className="btn fundraiser-detail-share-btn" onClick={handleShare}>
               <ShareIcon />
               {t('fundraiserDetail.share')}
@@ -185,7 +198,7 @@ export default function FundraiserDetailView({
         ) : null}
       </section>
 
-      <FundraiserHelpMethods />
+      <FundraiserHelpMethods monobankUrl={monobankUrl} />
     </div>
   )
 }

@@ -8,7 +8,7 @@ import { prisma } from '@/lib/prisma'
 import { createSession } from '@/lib/session'
 
 export type RegisterFormState = {
-  errorKey?: 'duplicate' | 'generic' | 'validation' | 'mismatch' | 'short' | 'email'
+  errorKey?: 'duplicate' | 'duplicateGoogle' | 'generic' | 'validation' | 'mismatch' | 'short' | 'email'
 }
 
 const schema = z
@@ -47,12 +47,25 @@ export async function registerAction(
   }
 
   const { email, name, password } = parsed.data
+  const normalizedEmail = email.toLowerCase()
+
+  const existing = await prisma.user.findUnique({
+    where: { email: normalizedEmail },
+    select: { id: true, googleId: true, passwordHash: true },
+  })
+  if (existing) {
+    if (existing.googleId && !existing.passwordHash) {
+      return { errorKey: 'duplicateGoogle' }
+    }
+    return { errorKey: 'duplicate' }
+  }
+
   const passwordHash = await bcrypt.hash(password, 10)
 
   try {
     const user = await prisma.user.create({
       data: {
-        email: email.toLowerCase(),
+        email: normalizedEmail,
         name: name?.trim() || null,
         passwordHash,
       },

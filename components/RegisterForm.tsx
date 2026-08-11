@@ -5,6 +5,7 @@ import { useFormStatus } from 'react-dom'
 import { useLanguage } from '@/contexts/LanguageContext'
 import { registerAction, type RegisterFormState } from '@/app/register/actions'
 import { useActionState } from 'react'
+import GoogleSignInButton from '@/components/GoogleSignInButton'
 
 const initialState: RegisterFormState = {}
 
@@ -12,6 +13,8 @@ function errorLabel(key: RegisterFormState['errorKey'], t: (k: string) => string
   switch (key) {
     case 'duplicate':
       return t('register.errorDuplicate')
+    case 'duplicateGoogle':
+      return t('register.errorDuplicateGoogle')
     case 'mismatch':
       return t('register.errorMismatch')
     case 'short':
@@ -36,7 +39,11 @@ function SubmitButton() {
   )
 }
 
-export default function RegisterForm() {
+type RegisterFormProps = {
+  googleAuthEnabled?: boolean
+}
+
+export default function RegisterForm({ googleAuthEnabled = false }: RegisterFormProps) {
   const { t } = useLanguage()
   const [state, formAction] = useActionState(registerAction, initialState)
 
@@ -49,6 +56,15 @@ export default function RegisterForm() {
         <p className="register-form-alert" role="alert">
           {errorLabel(state.errorKey, t)}
         </p>
+      ) : null}
+
+      {googleAuthEnabled ? (
+        <>
+          <GoogleSignInButton labelKey="auth.googleRegister" />
+          <p className="auth-divider">
+            <span>{t('auth.orDivider')}</span>
+          </p>
+        </>
       ) : null}
 
       <form action={formAction} className="register-form">

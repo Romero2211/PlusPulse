@@ -23,6 +23,7 @@ export default function AdminFundraiserForm(props:
         goalAmount: number
         raisedAmount: number
         coverImageUrl: string | null
+        monobankUrl: string | null
         published: boolean
         archived: boolean
       }
@@ -98,6 +99,19 @@ export default function AdminFundraiserForm(props:
             <input name="raisedAmount" type="text" defaultValue={props.mode === 'edit' ? String(props.initial.raisedAmount) : '0'} />
           </label>
         </div>
+
+        <label className="admin-field">
+          <span>{t('admin.fieldMonobankUrl')}</span>
+          <input
+            name="monobankUrl"
+            type="url"
+            inputMode="url"
+            maxLength={500}
+            placeholder="https://send.monobank.ua/jar/..."
+            defaultValue={props.mode === 'edit' ? props.initial.monobankUrl ?? '' : ''}
+          />
+          <small className="admin-hint">{t('admin.monobankUrlHint')}</small>
+        </label>
 
         <label className="admin-field">
           <span>{t('admin.fieldCover')}</span>

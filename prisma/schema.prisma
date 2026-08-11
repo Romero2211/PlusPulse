@@ -15,7 +15,10 @@ model User {
   id           String   @id @default(cuid())
   email        String   @unique
   name         String?
-  passwordHash String
+  /// bcrypt-хеш; null — лише вхід через Google
+  passwordHash String?
+  /// Google sub (OAuth)
+  googleId     String?  @unique
   /// Публічний опис / «про себе»
   bio          String?
   phone        String?
@@ -150,6 +153,8 @@ model Fundraiser {
   gallery       Json?
   /// Дата завершення збору (для відображення «днів до завершення»)
   endsAt        DateTime?
+  /// Посилання на банку Monobank (send.monobank.ua/jar/…)
+  monobankUrl   String?
   publishedAt   DateTime?
   archivedAt    DateTime?
   createdAt     DateTime @default(now())

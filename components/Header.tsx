@@ -101,7 +101,12 @@ export default function Header() {
                 >
                   ×
                 </button>
-                <LoginForm variant="modal" onBeforeRegister={closeLoginModal} titleId="auth-modal-title" />
+                <LoginForm
+                  variant="modal"
+                  onBeforeRegister={closeLoginModal}
+                  titleId="auth-modal-title"
+                  googleAuthEnabled={process.env.NEXT_PUBLIC_GOOGLE_OAUTH_ENABLED === '1'}
+                />
               </div>
             </div>
           </div>,
