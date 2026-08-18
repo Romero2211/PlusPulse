@@ -71,6 +71,20 @@
     background: #fff;
 }
 
+.header.header-on-hero .hamburger {
+    border-color: rgba(255, 255, 255, 0.45);
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.header.header-on-hero.scrolled .hamburger span {
+    background: var(--text-primary);
+}
+
+.header.header-on-hero.scrolled .hamburger {
+    border-color: var(--border-color);
+    background: var(--bg-light);
+}
+
 .header.header-on-hero .logo-brand-text {
     color: #fff;
 }
@@ -359,6 +373,7 @@ main.events-page {
     color: #fff;
     padding: 0;
     overflow: hidden;
+    width: 100%;
 }
 
 .footer--redesign .footer-bg {
@@ -426,5 +441,60 @@ main.events-page {
 @media (max-width: 968px) {
     .footer--redesign .footer-content {
         grid-template-columns: 1fr;
+        gap: 2rem;
+        width: 100%;
+    }
+
+    .footer--redesign .footer-section {
+        width: 100%;
+        min-width: 0;
+    }
+
+    .footer--redesign .footer-section ul li a {
+        display: inline-block;
+        padding: 0.2rem 0;
+    }
+
+    .footer--redesign .container {
+        padding-top: 2.5rem;
+        padding-left: 1.25rem;
+        padding-right: 1.25rem;
+    }
+
+    .footer--redesign .footer-section:first-child p {
+        font-size: 0.95rem;
+        line-height: 1.65;
+        word-break: break-word;
+    }
+
+    .footer--redesign .footer-section h4 {
+        margin-bottom: 0.85rem;
+    }
+
+    .footer--redesign .footer-contact-item {
+        align-items: flex-start;
+        font-size: 0.95rem;
+    }
+
+    .footer--redesign .footer-bottom {
+        padding-top: 1.5rem;
+        font-size: 0.8125rem;
+        line-height: 1.55;
+    }
+
+    .footer--redesign .footer-bottom p {
+        max-width: 28rem;
+        margin: 0 auto;
+    }
+}
+
+@media (max-width: 480px) {
+    .footer--redesign .logo-brand-text {
+        font-size: 1.25rem;
+    }
+
+    .footer--redesign .logo-brand-icon {
+        height: 40px;
+        width: auto;
     }
 }

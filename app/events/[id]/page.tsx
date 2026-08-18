@@ -36,30 +36,10 @@ export default async function EventDetailPage(props: Props) {
     where: { id },
     include: {
       host: {
-        select: {
-          id: true,
-          name: true,
-          email: true,
-          bio: true,
-          phone: true,
-          city: true,
-          avatarUrl: true,
-        },
+        select: { id: true, name: true, email: true },
       },
       participants: {
-        include: {
-          user: {
-            select: {
-              id: true,
-              name: true,
-              email: true,
-              bio: true,
-              phone: true,
-              city: true,
-              avatarUrl: true,
-            },
-          },
-        },
+        select: { userId: true },
       },
     },
   })
@@ -72,36 +52,43 @@ export default async function EventDetailPage(props: Props) {
   const isJoined = !!session && row.participants.some((p) => p.userId === session.id)
   const canChat = isHost || isJoined
 
-  const profilesMap = new Map<string, ChatMemberPublic>()
-  profilesMap.set(row.host.id, {
-    id: row.host.id,
-    displayName: buildDisplayName(row.host.name, row.host.email),
-    bio: row.host.bio,
-    phone: row.host.phone,
-    city: row.host.city,
-    avatarUrl: row.host.avatarUrl,
-    isHost: true,
-    hostedEventsCount: 0,
-    participatedEventsCount: 0,
-  })
-  for (const p of row.participants) {
-    if (p.userId === row.hostId) continue
-    const u = p.user
-    profilesMap.set(u.id, {
-      id: u.id,
-      displayName: buildDisplayName(u.name, u.email),
-      bio: u.bio,
-      phone: u.phone,
-      city: u.city,
-      avatarUrl: u.avatarUrl,
-      isHost: false,
-      hostedEventsCount: 0,
-      participatedEventsCount: 0,
-    })
-  }
-
+  let profilesById: Record<string, ChatMemberPublic> = {}
   let messages: ChatMessageWire[] = []
+
   if (canChat && session) {
+    const profilesMap = new Map<string, ChatMemberPublic>()
+
+    const memberRows = await prisma.user.findMany({
+      where: {
+        id: {
+          in: Array.from(new Set([row.hostId, ...row.participants.map((p) => p.userId)])),
+        },
+      },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        bio: true,
+        phone: true,
+        city: true,
+        avatarUrl: true,
+      },
+    })
+
+    for (const u of memberRows) {
+      profilesMap.set(u.id, {
+        id: u.id,
+        displayName: buildDisplayName(u.name, u.email),
+        bio: u.bio,
+        phone: u.phone,
+        city: u.city,
+        avatarUrl: u.avatarUrl,
+        isHost: u.id === row.hostId,
+        hostedEventsCount: 0,
+        participatedEventsCount: 0,
+      })
+    }
+
     const mRows = await prisma.eventMessage.findMany({
       where: { eventId: id },
       orderBy: { createdAt: 'asc' },
@@ -120,6 +107,7 @@ export default async function EventDetailPage(props: Props) {
         },
       },
     })
+
     for (const m of mRows) {
       const uid = m.user.id
       if (!profilesMap.has(uid)) {
@@ -136,6 +124,32 @@ export default async function EventDetailPage(props: Props) {
         })
       }
     }
+
+    if (profilesMap.size > 0) {
+      const userIds = Array.from(profilesMap.keys())
+      const [hosted, participated] = await Promise.all([
+        prisma.event.groupBy({
+          by: ['hostId'],
+          where: { hostId: { in: userIds } },
+          _count: { _all: true },
+        }),
+        prisma.eventParticipant.groupBy({
+          by: ['userId'],
+          where: { userId: { in: userIds } },
+          _count: { _all: true },
+        }),
+      ])
+
+      const hostedMap = new Map<string, number>(hosted.map((r) => [r.hostId, r._count._all]))
+      const participatedMap = new Map<string, number>(participated.map((r) => [r.userId, r._count._all]))
+
+      for (const [uid, prof] of profilesMap.entries()) {
+        prof.hostedEventsCount = hostedMap.get(uid) ?? 0
+        prof.participatedEventsCount = participatedMap.get(uid) ?? 0
+      }
+    }
+
+    profilesById = Object.fromEntries(profilesMap)
     messages = mRows.map((m) => ({
       id: m.id,
       body: m.body,
@@ -143,32 +157,6 @@ export default async function EventDetailPage(props: Props) {
       authorId: m.userId,
     }))
   }
-
-  if (profilesMap.size > 0) {
-    const userIds = Array.from(profilesMap.keys())
-    const [hosted, participated] = await Promise.all([
-      prisma.event.groupBy({
-        by: ['hostId'],
-        where: { hostId: { in: userIds } },
-        _count: { _all: true },
-      }),
-      prisma.eventParticipant.groupBy({
-        by: ['userId'],
-        where: { userId: { in: userIds } },
-        _count: { _all: true },
-      }),
-    ])
-
-    const hostedMap = new Map<string, number>(hosted.map((r) => [r.hostId, r._count._all]))
-    const participatedMap = new Map<string, number>(participated.map((r) => [r.userId, r._count._all]))
-
-    for (const [uid, prof] of profilesMap.entries()) {
-      prof.hostedEventsCount = hostedMap.get(uid) ?? 0
-      prof.participatedEventsCount = participatedMap.get(uid) ?? 0
-    }
-  }
-
-  const profilesById: Record<string, ChatMemberPublic> = Object.fromEntries(profilesMap)
 
   const payload: EventDetailPayload = {
     id: row.id,

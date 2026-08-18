@@ -4,9 +4,10 @@ import { z } from 'zod'
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { prisma } from '@/lib/prisma'
-import { requireAdmin } from '@/lib/admin'
+import { requireAdmin, getAdminSession } from '@/lib/admin'
 import { slugify } from '@/lib/slug'
 import { saveUploadedImage, saveGalleryUploadsFromForm } from '@/lib/uploads'
+import { sanitizeUploadUrlList } from '@/lib/uploadUrls'
 
 export type AdminNewsFormState =
   | { success: true; id: string }
@@ -30,7 +31,9 @@ function parseGalleryUrls(raw: string | null): string[] {
   if (!raw) return []
   try {
     const parsed = JSON.parse(raw) as unknown
-    if (Array.isArray(parsed) && parsed.every((x) => typeof x === 'string')) return parsed as string[]
+    if (Array.isArray(parsed) && parsed.every((x) => typeof x === 'string')) {
+      return sanitizeUploadUrlList(parsed as string[], 'news')
+    }
     return []
   } catch {
     return []
@@ -38,10 +41,8 @@ function parseGalleryUrls(raw: string | null): string[] {
 }
 
 export async function createNewsPostAction(_prev: AdminNewsFormState, formData: FormData): Promise<AdminNewsFormState> {
-  let session
-  try {
-    session = await requireAdmin()
-  } catch {
+  const session = await getAdminSession()
+  if (!session) {
     return { error: 'unauth' }
   }
 
@@ -104,10 +105,8 @@ export async function createNewsPostAction(_prev: AdminNewsFormState, formData: 
 }
 
 export async function updateNewsPostAction(_prev: AdminNewsFormState, formData: FormData): Promise<AdminNewsFormState> {
-  let session
-  try {
-    session = await requireAdmin()
-  } catch {
+  const session = await getAdminSession()
+  if (!session) {
     return { error: 'unauth' }
   }
 

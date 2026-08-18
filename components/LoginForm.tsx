@@ -13,8 +13,8 @@ function errorLabel(key: LoginFormState['errorKey'], t: (k: string) => string): 
   switch (key) {
     case 'email':
       return t('login.errorEmail')
-    case 'oauth':
-      return t('login.errorOAuth')
+    case 'rate_limit':
+      return t('auth.rateLimit')
     case 'invalid':
       return t('login.errorInvalid')
     case 'generic':
@@ -30,6 +30,10 @@ function oauthRedirectLabel(code: string | undefined, t: (k: string) => string):
       return t('auth.oauthNotConfigured')
     case 'denied':
       return t('auth.oauthDenied')
+    case 'account_exists':
+      return t('auth.oauthAccountExists')
+    case 'account_mismatch':
+      return t('auth.oauthAccountMismatch')
     case 'state':
     case 'invalid':
       return t('auth.oauthState')

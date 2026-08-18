@@ -2,7 +2,7 @@
 
 import { revalidatePath } from 'next/cache'
 import { prisma } from '@/lib/prisma'
-import { requireAdmin } from '@/lib/admin'
+import { getAdminSession } from '@/lib/admin'
 
 export type AdminEventActionState = { success?: boolean; error?: 'unauth' | 'not_found' | 'generic' }
 
@@ -10,9 +10,8 @@ export async function approvePendingEventAction(
   _prev: AdminEventActionState,
   formData: FormData,
 ): Promise<AdminEventActionState> {
-  try {
-    await requireAdmin()
-  } catch {
+  const session = await getAdminSession()
+  if (!session) {
     return { error: 'unauth' }
   }
 
@@ -77,9 +76,8 @@ export async function rejectPendingEventAction(
   _prev: AdminEventActionState,
   formData: FormData,
 ): Promise<AdminEventActionState> {
-  try {
-    await requireAdmin()
-  } catch {
+  const session = await getAdminSession()
+  if (!session) {
     return { error: 'unauth' }
   }
 
@@ -100,9 +98,8 @@ export async function adminDeleteEventAction(
   _prev: AdminEventActionState,
   formData: FormData,
 ): Promise<AdminEventActionState> {
-  try {
-    await requireAdmin()
-  } catch {
+  const session = await getAdminSession()
+  if (!session) {
     return { error: 'unauth' }
   }
 

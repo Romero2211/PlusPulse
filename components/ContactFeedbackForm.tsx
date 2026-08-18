@@ -46,6 +46,11 @@ export default function ContactFeedbackForm() {
           {t('contact.feedbackErrorGeneric')}
         </p>
       ) : null}
+      {'error' in state && state.error === 'rate_limit' ? (
+        <p className="contact-feedback-alert" role="alert">
+          {t('auth.rateLimit')}
+        </p>
+      ) : null}
       {'success' in state && state.success ? (
         <p className="contact-feedback-success" role="status">
           {t('contact.feedbackSuccess')}

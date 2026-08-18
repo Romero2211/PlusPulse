@@ -1,7 +1,6 @@
 'use client'
 
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
 import { useLanguage } from '@/contexts/LanguageContext'
 import { useSession } from '@/contexts/SessionContext'
 import { SHOW_EVENTS_NAV } from '@/lib/featureFlags'

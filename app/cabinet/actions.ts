@@ -5,6 +5,7 @@ import path from 'path'
 import { revalidatePath } from 'next/cache'
 import { prisma } from '@/lib/prisma'
 import { getSession } from '@/lib/session'
+import { extForImageMime, validateImageBuffer } from '@/lib/imageValidation'
 
 export type CabinetFormState = {
   success?: boolean
@@ -28,6 +29,12 @@ export async function updateCabinetProfileAction(
   const bio = typeof formData.get('bio') === 'string' ? (formData.get('bio') as string).trim() : ''
   const city = typeof formData.get('city') === 'string' ? (formData.get('city') as string).trim() : ''
 
+  if (displayName.length > 120) {
+    return { errorKey: 'generic' }
+  }
+  if (city.length > 120) {
+    return { errorKey: 'generic' }
+  }
   if (bio.length > 1500) {
     return { errorKey: 'bio' }
   }
@@ -57,7 +64,17 @@ export async function updateCabinetProfileAction(
         return { errorKey: 'filetype' }
       }
 
-      const ext = file.type === 'image/png' ? 'png' : file.type === 'image/webp' ? 'webp' : 'jpg'
+      const buf = Buffer.from(await file.arrayBuffer())
+      const mime = validateImageBuffer(buf, file.type)
+      if (!mime) {
+        return { errorKey: 'filetype' }
+      }
+
+      const ext = extForImageMime(mime)
+      if (!ext) {
+        return { errorKey: 'filetype' }
+      }
+
       const userDir = path.join(process.cwd(), 'public', 'uploads', 'avatars', session.id)
       await mkdir(userDir, { recursive: true })
 
@@ -67,7 +84,6 @@ export async function updateCabinetProfileAction(
         await unlink(path.join(userDir, n)).catch(() => {})
       }
 
-      const buf = Buffer.from(await file.arrayBuffer())
       const filename = `avatar.${ext}`
       await writeFile(path.join(userDir, filename), buf)
       avatarUrl = `/uploads/avatars/${session.id}/${filename}`

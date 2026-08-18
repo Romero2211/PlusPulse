@@ -194,3 +194,12 @@ model ContactFeedback {
 
   @@index([createdAt])
 }
+
+/// Лічильники rate limit (логін, реєстрація, форми)
+model RateLimitEntry {
+  key       String   @id
+  count     Int      @default(1)
+  expiresAt DateTime
+
+  @@index([expiresAt])
+}

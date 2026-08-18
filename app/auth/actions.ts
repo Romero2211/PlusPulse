@@ -5,9 +5,10 @@ import { z } from 'zod'
 import bcrypt from 'bcryptjs'
 import { prisma } from '@/lib/prisma'
 import { createSession, destroySession } from '@/lib/session'
+import { consumeRateLimit, getClientIp } from '@/lib/rateLimit'
 
 export type LoginFormState = {
-  errorKey?: 'invalid' | 'email' | 'oauth' | 'generic'
+  errorKey?: 'invalid' | 'email' | 'generic' | 'rate_limit'
 }
 
 const loginSchema = z.object({
@@ -37,6 +38,17 @@ export async function loginAction(
 
   const email = parsed.data.email.toLowerCase()
 
+  const ip = await getClientIp()
+  const allowed = await consumeRateLimit({
+    namespace: 'login',
+    key: `${ip}:${email}`,
+    limit: 10,
+    windowSec: 15 * 60,
+  })
+  if (!allowed) {
+    return { errorKey: 'rate_limit' }
+  }
+
   let user
   try {
     user = await prisma.user.findUnique({
@@ -52,7 +64,7 @@ export async function loginAction(
   }
 
   if (!user.passwordHash) {
-    return { errorKey: 'oauth' }
+    return { errorKey: 'invalid' }
   }
 
   let passwordOk: boolean

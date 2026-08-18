@@ -1,22 +1,9 @@
 import { randomUUID } from 'crypto'
 import { mkdir, writeFile } from 'fs/promises'
 import path from 'path'
+import { extForImageMime, validateImageBuffer } from '@/lib/imageValidation'
 
 const MAX_BYTES = 5 * 1024 * 1024
-const ALLOWED_MIME = new Set(['image/jpeg', 'image/png', 'image/webp'])
-
-function extForMime(mime: string): string | null {
-  switch (mime) {
-    case 'image/jpeg':
-      return 'jpg'
-    case 'image/png':
-      return 'png'
-    case 'image/webp':
-      return 'webp'
-    default:
-      return null
-  }
-}
 
 function yyyymm(d = new Date()): string {
   const y = d.getFullYear()
@@ -35,14 +22,17 @@ export async function saveUploadedImage(opts: {
   if (!file || typeof file.arrayBuffer !== 'function') {
     throw new Error('invalid_file')
   }
-  if (!ALLOWED_MIME.has(file.type)) {
-    throw new Error('invalid_type')
-  }
   if (file.size <= 0 || file.size > MAX_BYTES) {
     throw new Error('invalid_size')
   }
 
-  const ext = extForMime(file.type)
+  const buf = Buffer.from(await file.arrayBuffer())
+  const mime = validateImageBuffer(buf, file.type)
+  if (!mime) {
+    throw new Error('invalid_type')
+  }
+
+  const ext = extForImageMime(mime)
   if (!ext) {
     throw new Error('invalid_type')
   }
@@ -52,7 +42,6 @@ export async function saveUploadedImage(opts: {
 
   const filename = `${randomUUID()}.${ext}`
   const abs = path.join(folder, filename)
-  const buf = Buffer.from(await file.arrayBuffer())
   await writeFile(abs, buf)
 
   const url = `/uploads/${kind}/${yyyymm()}/${filename}`
@@ -68,4 +57,3 @@ export async function saveGalleryUploadsFromForm(formData: FormData, kind: Uploa
   }
   return urls
 }
-

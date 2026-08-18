@@ -13,8 +13,8 @@ function errorLabel(key: RegisterFormState['errorKey'], t: (k: string) => string
   switch (key) {
     case 'duplicate':
       return t('register.errorDuplicate')
-    case 'duplicateGoogle':
-      return t('register.errorDuplicateGoogle')
+    case 'rate_limit':
+      return t('auth.rateLimit')
     case 'mismatch':
       return t('register.errorMismatch')
     case 'short':

@@ -6,9 +6,10 @@ import bcrypt from 'bcryptjs'
 import { Prisma } from '@prisma/client'
 import { prisma } from '@/lib/prisma'
 import { createSession } from '@/lib/session'
+import { rateLimitByIp } from '@/lib/rateLimit'
 
 export type RegisterFormState = {
-  errorKey?: 'duplicate' | 'duplicateGoogle' | 'generic' | 'validation' | 'mismatch' | 'short' | 'email'
+  errorKey?: 'duplicate' | 'generic' | 'validation' | 'mismatch' | 'short' | 'email' | 'rate_limit'
 }
 
 const schema = z
@@ -49,14 +50,16 @@ export async function registerAction(
   const { email, name, password } = parsed.data
   const normalizedEmail = email.toLowerCase()
 
+  const allowed = await rateLimitByIp('register', 5, 60 * 60)
+  if (!allowed) {
+    return { errorKey: 'rate_limit' }
+  }
+
   const existing = await prisma.user.findUnique({
     where: { email: normalizedEmail },
     select: { id: true, googleId: true, passwordHash: true },
   })
   if (existing) {
-    if (existing.googleId && !existing.passwordHash) {
-      return { errorKey: 'duplicateGoogle' }
-    }
     return { errorKey: 'duplicate' }
   }
 

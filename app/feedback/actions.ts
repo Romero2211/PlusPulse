@@ -3,10 +3,11 @@
 import { z } from 'zod'
 import { revalidatePath } from 'next/cache'
 import { prisma } from '@/lib/prisma'
+import { rateLimitByIp } from '@/lib/rateLimit'
 
 export type ContactFeedbackFormState =
   | { success: true }
-  | { success?: false; error?: 'validation' | 'generic' }
+  | { success?: false; error?: 'validation' | 'generic' | 'rate_limit' }
 
 const nameSchema = z.string().trim().max(120)
 const messageSchema = z.string().trim().min(10, 'min').max(4000, 'max')
@@ -37,6 +38,9 @@ export async function submitContactFeedbackAction(
 
   const messageParsed = messageSchema.safeParse(typeof messageRaw === 'string' ? messageRaw : '')
   if (!messageParsed.success) return { error: 'validation' }
+
+  const allowed = await rateLimitByIp('contact_feedback', 5, 60 * 60)
+  if (!allowed) return { error: 'rate_limit' }
 
   try {
     await prisma.contactFeedback.create({

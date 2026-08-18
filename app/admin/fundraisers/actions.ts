@@ -4,7 +4,7 @@ import { z } from 'zod'
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { prisma } from '@/lib/prisma'
-import { requireAdmin } from '@/lib/admin'
+import { requireAdmin, getAdminSession } from '@/lib/admin'
 import { saveUploadedImage } from '@/lib/uploads'
 
 export type AdminFundraiserFormState =
@@ -75,10 +75,8 @@ export async function createFundraiserAction(
   _prev: AdminFundraiserFormState,
   formData: FormData,
 ): Promise<AdminFundraiserFormState> {
-  let session
-  try {
-    session = await requireAdmin()
-  } catch {
+  const session = await getAdminSession()
+  if (!session) {
     return { error: 'unauth' }
   }
 
@@ -143,10 +141,8 @@ export async function updateFundraiserAction(
   _prev: AdminFundraiserFormState,
   formData: FormData,
 ): Promise<AdminFundraiserFormState> {
-  let session
-  try {
-    session = await requireAdmin()
-  } catch {
+  const session = await getAdminSession()
+  if (!session) {
     return { error: 'unauth' }
   }
 
@@ -225,9 +221,8 @@ export async function addFundraiserReportAction(
   _prev: AdminFundraiserReportFormState,
   formData: FormData,
 ): Promise<AdminFundraiserReportFormState> {
-  try {
-    await requireAdmin()
-  } catch {
+  const session = await getAdminSession()
+  if (!session) {
     return { error: 'unauth' }
   }
 
@@ -272,9 +267,8 @@ export async function deleteFundraiserReportAction(
   _prev: AdminFundraiserReportFormState,
   formData: FormData,
 ): Promise<AdminFundraiserReportFormState> {
-  try {
-    await requireAdmin()
-  } catch {
+  const session = await getAdminSession()
+  if (!session) {
     return { error: 'unauth' }
   }
 

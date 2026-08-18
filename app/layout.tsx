@@ -4,11 +4,13 @@ import { Suspense } from 'react'
 import './globals.css'
 import './brand.css'
 import { Providers } from '@/components/Providers'
+import { getAppOrigin } from '@/lib/appUrl'
 import { getSession } from '@/lib/session'
 
 const inter = Inter({ subsets: ['latin', 'cyrillic'] })
 
 export const metadata: Metadata = {
+  metadataBase: new URL(getAppOrigin()),
   title: 'БО БФ «ПЛЮС ПУЛЬС» | Благодійний фонд',
   description: 'Благодійна організація «Благодійний фонд «ПЛЮС ПУЛЬС» - недержавна, неприбуткова благодійна організація, що діє відповідно до законодавства України.',
   keywords: 'благодійність, фонд, Україна, допомога, благодійна організація',

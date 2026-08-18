@@ -44,6 +44,24 @@ export default function Header() {
   }, [])
 
   useEffect(() => {
+    setIsMenuOpen(false)
+  }, [pathname])
+
+  useEffect(() => {
+    if (!isMenuOpen) return
+    const prev = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setIsMenuOpen(false)
+    }
+    window.addEventListener('keydown', onKey)
+    return () => {
+      document.body.style.overflow = prev
+      window.removeEventListener('keydown', onKey)
+    }
+  }, [isMenuOpen])
+
+  useEffect(() => {
     if (typeof window === 'undefined') return
 
     const handleScroll = () => {
@@ -120,7 +138,7 @@ export default function Header() {
         <div className="container">
           <div className="nav-wrapper">
             <LogoBrand variant="header" />
-            <ul className={`nav-menu ${isMenuOpen ? 'active' : ''}`}>
+            <ul id="site-nav-menu" className={`nav-menu ${isMenuOpen ? 'active' : ''}`}>
               <li>
                 {isHome ? (
                   <a href="#home" className="nav-link" onClick={(e) => handleSmoothScroll(e, '#home')}>
@@ -180,62 +198,74 @@ export default function Header() {
                 </Link>
               </li>
             </ul>
-            <div className="nav-actions">
-              <div className="language-switcher">
-                <button
-                  className={`lang-btn ${language === 'uk' ? 'active' : ''}`}
-                  onClick={() => setLanguage('uk')}
-                  type="button"
-                >
-                  UA
-                </button>
-                <button
-                  className={`lang-btn ${language === 'en' ? 'active' : ''}`}
-                  onClick={() => setLanguage('en')}
-                  type="button"
-                >
-                  EN
-                </button>
-              </div>
-              {user ? (
-                <div className="nav-user-cluster">
-                  <Link href="/cabinet" className="nav-user-icon" aria-label={t('nav.cabinet')} title={t('nav.cabinet')}>
-                    <UserIcon />
-                  </Link>
-                  <form action={logoutAction} className="nav-logout-form nav-logout-form--desktop">
-                    <button type="submit" className="nav-logout-btn">
-                      {t('nav.logout')}
-                    </button>
-                  </form>
+            <div className="nav-toolbar">
+              <div className="nav-actions">
+                <div className="language-switcher">
+                  <button
+                    className={`lang-btn ${language === 'uk' ? 'active' : ''}`}
+                    onClick={() => setLanguage('uk')}
+                    type="button"
+                  >
+                    UA
+                  </button>
+                  <button
+                    className={`lang-btn ${language === 'en' ? 'active' : ''}`}
+                    onClick={() => setLanguage('en')}
+                    type="button"
+                  >
+                    EN
+                  </button>
                 </div>
-              ) : (
-                <button
-                  type="button"
-                  className="nav-user-icon"
-                  onClick={openLoginModal}
-                  aria-label={t('nav.login')}
-                  title={t('nav.login')}
-                >
-                  <UserIcon />
-                </button>
-              )}
-              <Link href="/donate" className="nav-link nav-link-donate nav-donate-desktop">
-                {t('nav.donate')}
-              </Link>
+                {user ? (
+                  <div className="nav-user-cluster">
+                    <Link href="/cabinet" className="nav-user-icon" aria-label={t('nav.cabinet')} title={t('nav.cabinet')}>
+                      <UserIcon />
+                    </Link>
+                    <form action={logoutAction} className="nav-logout-form nav-logout-form--desktop">
+                      <button type="submit" className="nav-logout-btn">
+                        {t('nav.logout')}
+                      </button>
+                    </form>
+                  </div>
+                ) : (
+                  <button
+                    type="button"
+                    className="nav-user-icon"
+                    onClick={openLoginModal}
+                    aria-label={t('nav.login')}
+                    title={t('nav.login')}
+                  >
+                    <UserIcon />
+                  </button>
+                )}
+                <Link href="/donate" className="nav-link nav-link-donate nav-donate-desktop">
+                  {t('nav.donate')}
+                </Link>
+              </div>
+              <button
+                className={`hamburger ${isMenuOpen ? 'active' : ''}`}
+                onClick={() => setIsMenuOpen(!isMenuOpen)}
+                aria-label={isMenuOpen ? 'Закрити меню' : 'Відкрити меню'}
+                aria-expanded={isMenuOpen}
+                aria-controls="site-nav-menu"
+                type="button"
+              >
+                <span />
+                <span />
+                <span />
+              </button>
             </div>
-            <button
-              className={`hamburger ${isMenuOpen ? 'active' : ''}`}
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-              aria-label="Меню"
-              type="button"
-            >
-              <span />
-              <span />
-              <span />
-            </button>
           </div>
         </div>
       </nav>
+
+      <button
+        type="button"
+        className={`nav-backdrop ${isMenuOpen ? 'active' : ''}`}
+        aria-hidden={!isMenuOpen}
+        tabIndex={isMenuOpen ? 0 : -1}
+        onClick={() => setIsMenuOpen(false)}
+      />
 
       {loginModal}
     </header>

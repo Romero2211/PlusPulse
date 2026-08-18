@@ -11,6 +11,14 @@ export function isAdminEmail(email: string): boolean {
   return allow.includes(email.trim().toLowerCase())
 }
 
+/** Для server actions — без redirect (не ловити NEXT_REDIRECT у try/catch). */
+export async function getAdminSession(): Promise<{ id: string; email: string } | null> {
+  const session = await getSession()
+  if (!session) return null
+  if (!isAdminEmail(session.email)) return null
+  return session
+}
+
 export async function requireAdmin(): Promise<{ id: string; email: string }> {
   const session = await getSession()
   if (!session) {

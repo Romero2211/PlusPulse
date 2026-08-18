@@ -1,6 +1,13 @@
 import { prisma } from '@/lib/prisma'
 import type { GoogleUserProfile } from '@/lib/googleOAuth'
 
+export class GoogleAuthError extends Error {
+  constructor(public readonly code: 'ACCOUNT_EXISTS_PASSWORD' | 'GOOGLE_ACCOUNT_MISMATCH') {
+    super(code)
+    this.name = 'GoogleAuthError'
+  }
+}
+
 export async function findOrCreateUserFromGoogle(profile: GoogleUserProfile) {
   const email = profile.email.trim().toLowerCase()
 
@@ -12,10 +19,17 @@ export async function findOrCreateUserFromGoogle(profile: GoogleUserProfile) {
 
   const byEmail = await prisma.user.findUnique({
     where: { email },
-    select: { id: true, email: true, googleId: true, name: true, avatarUrl: true },
+    select: { id: true, email: true, googleId: true, passwordHash: true, name: true, avatarUrl: true },
   })
 
   if (byEmail) {
+    if (byEmail.googleId && byEmail.googleId !== profile.sub) {
+      throw new GoogleAuthError('GOOGLE_ACCOUNT_MISMATCH')
+    }
+    if (byEmail.passwordHash && !byEmail.googleId) {
+      throw new GoogleAuthError('ACCOUNT_EXISTS_PASSWORD')
+    }
+
     return prisma.user.update({
       where: { id: byEmail.id },
       data: {
